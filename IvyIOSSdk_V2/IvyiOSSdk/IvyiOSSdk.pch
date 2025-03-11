@@ -1,0 +1,9 @@
+//
+//  IvyiOSSdk.pch
+//  Pods
+//
+//  Created by ivy on 2025/3/6.
+//
+#ifdef __OBJC__
+#import <IvyiOSSdk/NSString+Base64.h>
+#endif

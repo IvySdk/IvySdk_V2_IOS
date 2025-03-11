@@ -1,0 +1,65 @@
+fastlane_version "2.46.0"
+default_platform :ios
+produce(
+    username: "popdev@ivymobile.com",
+    app_identifier: "com.ivyios.newsdk.test",
+    app_name: "Bubble Pop Star",
+    skip_itc: true
+)
+#modify_services(
+#    username: "popdev@ivymobile.com",
+#    app_identifier: "com.ivyios.newsdk.test",
+#    services: {
+#        in_app_purchase: "on",         # Valid values: "on", "off"
+#        push_notification: "on",       # Valid values: "on", "off"
+#    }
+#)
+update_app_identifier(
+    xcodeproj: "/Volumes/Ext/IOSSourceDir/unity/TestProject/ios/Unity-iPhone.xcodeproj",
+    plist_path: "/Volumes/Ext/IOSSourceDir/unity/TestProject/ios/Info.plist",
+    app_identifier: "com.ivyios.newsdk.test"
+)
+recreate_schemes(project: "/Volumes/Ext/IOSSourceDir/unity/TestProject/ios/Unity-iPhone.xcodeproj")
+#disable_automatic_code_signing(
+#    path: "/Volumes/Ext/IOSSourceDir/unity/TestProject/ios/Unity-iPhone.xcodeproj",
+#    targets: ["Bubble Pop Star"]
+#)
+platform :ios do
+    lane :release do
+        #match(type: "appstore",
+	    #      #force:true,
+        #      app_identifier: "com.ivyios.newsdk.test",
+        #      username: "popdev@ivymobile.com",
+        #      storage_mode: "git",
+        #      skip_confirmation: true,
+        #      git_url:"git@10.80.1.8:ios-build-ci/cert.git",
+        #      git_branch:"popdev@ivymobile.com")
+        #sigh(
+	    # #force:true,
+	    # app_identifier: "com.ivyios.newsdk.test")
+        #update_project_provisioning(
+        #    xcodeproj: "/Volumes/Ext/IOSSourceDir/unity/TestProject/ios/Unity-iPhone.xcodeproj",
+        #    profile: ENV["SIGH_PROFILE_PATH"],
+        #    target_filter: "Bubble Pop Star",
+        #    build_configuration: "Release")
+    end
+        
+    lane :debugBuild do
+        #match(type: "development",
+	    #      #force:true,
+        #      app_identifier: "com.ivyios.newsdk.test",
+        #      username: "popdev@ivymobile.com",
+        #      storage_mode: "git",
+        #      skip_confirmation: true,
+        #      git_url:"git@10.80.1.8:ios-build-ci/cert.git",
+        #      git_branch:"popdev@ivymobile.com")
+        #sigh(development: true,
+	    #     #force:true,
+        #     app_identifier: "com.ivyios.newsdk.test")
+        #update_project_provisioning(
+        #    xcodeproj: "/Volumes/Ext/IOSSourceDir/unity/TestProject/ios/Unity-iPhone.xcodeproj",
+        #    profile: ENV["SIGH_PROFILE_PATH"],
+        #    target_filter: "Bubble Pop Star",
+        #    build_configuration: "Debug")
+    end
+end

@@ -1,0 +1,237 @@
+{
+  "ads": {
+    "banner": {
+      "default": {
+        "autoReload": true,
+        "cache": true,
+        "enable": true,
+        "ids": [
+          {
+            "id": "ca-app-pub-1914768831611213/9664247424",
+            "platform": "admob",
+            "priority": 1
+          },
+          {
+            "id": "ca-app-pub-1914768831611213/7038084083",
+            "platform": "admob",
+            "priority": 2
+          },
+          {
+            "id": "ca-app-pub-1914768831611213/2931318119",
+            "platform": "admob",
+            "priority": 3
+          }
+        ],
+        "size": "adaptive",
+        "timeout": 10
+      }
+    },
+    "full": {
+      "default": {
+        "cache": true,
+        "enable": true,
+        "ids": [
+          {
+            "id": "ca-app-pub-1914768831611213/4408815652",
+            "platform": "admob",
+            "priority": 1
+          }
+        ],
+        "timeout": 10
+      }
+    },
+    "video": {
+      "default": {
+        "cache": true,
+        "enable": true,
+        "ids": [
+          {
+            "id": "ca-app-pub-1914768831611213/6276145683",
+            "platform": "admob",
+            "priority": 1
+          }
+        ],
+        "timeout": 30
+      }
+    }
+  },
+  "analyse": [
+    {
+      "api": "firebase"
+    },
+    {
+      "api": "facebook"
+    },
+    {
+      "api": "appsflyer",
+      "id": "6467607734",
+      "key": "J6ejjnUP9fMkv29PqBuYzR"
+    }
+  ],
+  "appid": 50171,
+  "appstoreid": 6467607734,
+  "autoRequestIDFA": true,
+  "data": [],
+  "domain": "http://api2.restartad.com/api/data?v_api=4&appid=50171&channel=appstore",
+  "event_targets": {
+    "banner_load_failed": 0,
+    "banner_loaded": 0,
+    "interstitial_load_failed": 0,
+    "interstitial_loaded": 0,
+    "native_load_failed": 0,
+    "native_loaded": 0,
+    "video_load_failed": 0,
+    "video_loaded": 0
+  },
+  "gamecenter": {
+    "leaderboard": {
+      "1": {
+        "id": "",
+        "sort": 1,
+        "timescope": ""
+      }
+    }
+  },
+  "gen_events": {
+    "appopen_2_in1day": [
+      {
+        "d": 1,
+        "e1": "sdk_app_open",
+        "op": ">=",
+        "r": false,
+        "v": 2
+      }
+    ],
+    "appopen_3_in1day": [
+      {
+        "d": 1,
+        "e1": "sdk_app_open",
+        "op": ">=",
+        "r": false,
+        "v": 3
+      }
+    ],
+    "interstitial_shown_2_in1day": [
+      {
+        "d": 1,
+        "e1": "sdk_inter_show",
+        "op": ">=",
+        "r": false,
+        "v": 2
+      }
+    ],
+    "interstitial_shown_2_in3day": [
+      {
+        "d": 3,
+        "e1": "sdk_inter_show",
+        "op": ">=",
+        "r": false,
+        "v": 2
+      }
+    ],
+    "video_shown_2_in1day": [
+      {
+        "d": 1,
+        "e1": "sdk_video_show",
+        "op": ">=",
+        "r": false,
+        "v": 2
+      }
+    ],
+    "video_shown_2_in3day": [
+      {
+        "d": 3,
+        "e1": "sdk_video_show",
+        "op": ">=",
+        "r": false,
+        "v": 2
+      }
+    ]
+  },
+  "gts": 0,
+  "init": {
+    "admob": {
+      "admob-appid": "ca-app-pub-1914768831611213~6182692632"
+    },
+    "appsflyer": {
+      "appid": "6467607734",
+      "key": "J6ejjnUP9fMkv29PqBuYzR"
+    },
+    "ironsource": {
+      "appid": ""
+    },
+    "unity": {
+      "appid": ""
+    }
+  },
+  "leaderboard_url": "http://match3games1.iibingo.com/api",
+  "parfkaUrl": "http://gateway.papermobi.com:8080/event",
+  "payment": {
+    "data": {
+      "1": {
+        "id": "",
+        "name": ""
+      },
+      "2": {
+        "id": "",
+        "name": ""
+      },
+      "3": {
+        "id": "",
+        "name": ""
+      },
+      "4": {
+        "id": "",
+        "name": ""
+      },
+      "5": {
+        "id": "",
+        "name": ""
+      }
+    },
+    "debug": 0,
+    "sharesecret": "cf7a1b4e33c54837ba47885133edc06c"
+  },
+  "push": [
+    {
+      "api": "firebase"
+    }
+  ],
+  "remoteconfig": {
+    "banner_level_start": 2,
+    "challenge_level_start": 15,
+    "inter_2nd_page_close": true,
+    "inter_cues_close": false,
+    "inter_interval": 0,
+    "inter_level_pause": true,
+    "inter_level_start": 1,
+    "inter_shop_close": false,
+    "show_banner": true,
+    "special_level_start": 10
+  },
+  "share": "",
+  "sns": {
+    "api": "facebook",
+    "invite_img": "",
+    "invite_url": "",
+    "share_url": "https://apps.apple.com/app/id6467607734"
+  },
+  "stats": "http://stats.goinfun.com:8080",
+  "token": "",
+  "track": {
+    "op": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10
+    ]
+  },
+  "v_api": 4,
+  "v_pub": 1
+}

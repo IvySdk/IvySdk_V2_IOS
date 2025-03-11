@@ -1,0 +1,5 @@
+                    CFBundleDisplayName = "Bubble Pop Star";
+                    NSUserTrackingUsageDescription = "This only uses device info for more interesting and relevant ads.";
+                    NSLocationAlwaysUsageDescription = "Some ad content may access location";
+                    NSLocationUsageDescription = "Some ad content may access location";
+                    NSLocationWhenInUseUsageDescription = "Some ad content may access location";
