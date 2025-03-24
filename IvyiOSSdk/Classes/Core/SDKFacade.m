@@ -331,6 +331,8 @@ static NSString * CRASH_EMAIL_ADDR;
         [self _initAIHelp];
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             [self _checkCMPAndATT];
+            [self _initPayment];
+            [self _initGameCenter];
         });
         self->_initLaterTimer = [SDKTimer startTimer:5 interval:1 onComplete:^{
             [self->_initLaterTimer stop];

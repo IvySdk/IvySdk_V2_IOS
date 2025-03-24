@@ -46,8 +46,8 @@
             filePath = "../IvyiOSSdk/Classes/Core/SDKFacade.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "710"
-            endingLineNumber = "710"
+            startingLineNumber = "712"
+            endingLineNumber = "712"
             landmarkName = "-_syncConfig"
             landmarkType = "7">
          </BreakpointContent>
@@ -62,8 +62,8 @@
             filePath = "../IvyiOSSdk/Classes/Core/SDKFacade.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "783"
-            endingLineNumber = "783"
+            startingLineNumber = "785"
+            endingLineNumber = "785"
             landmarkName = "-_getConfigUrl"
             landmarkType = "7">
          </BreakpointContent>
@@ -94,8 +94,8 @@
             filePath = "../IvyiOSSdk/Classes/Core/SDKFacade.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "4119"
-            endingLineNumber = "4119"
+            startingLineNumber = "4121"
+            endingLineNumber = "4121"
             landmarkName = "-pay:payload:"
             landmarkType = "7">
          </BreakpointContent>
@@ -110,8 +110,8 @@
             filePath = "../IvyiOSSdk/Classes/Core/SDKFacade.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "351"
-            endingLineNumber = "351"
+            startingLineNumber = "353"
+            endingLineNumber = "353"
             landmarkName = "-initAdsOnce"
             landmarkType = "7">
          </BreakpointContent>
@@ -126,8 +126,8 @@
             filePath = "../IvyiOSSdk/Classes/Core/SDKFacade.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1080"
-            endingLineNumber = "1080"
+            startingLineNumber = "1082"
+            endingLineNumber = "1082"
             landmarkName = "-_initGdpr:"
             landmarkType = "7">
          </BreakpointContent>
@@ -158,8 +158,8 @@
             filePath = "../IvyiOSSdk/Classes/Core/SDKFacade.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "4113"
-            endingLineNumber = "4113"
+            startingLineNumber = "4115"
+            endingLineNumber = "4115"
             landmarkName = "-pay:payload:"
             landmarkType = "7">
          </BreakpointContent>
@@ -174,8 +174,8 @@
             filePath = "../IvyiOSSdk/Classes/Core/SDKFacade.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1443"
-            endingLineNumber = "1443"
+            startingLineNumber = "1445"
+            endingLineNumber = "1445"
             landmarkName = "-getAdModule:withTag:"
             landmarkType = "7">
          </BreakpointContent>
