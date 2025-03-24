@@ -184,7 +184,7 @@ This is the IvySdk for ios platform.
       #google.dependency 'GoogleMobileAdsMediationAdColony', '4.9.0.2'
       google.dependency 'GoogleMobileAdsMediationMintegral', '7.7.2.1'
       #google.dependency 'OpenWrapSDK', '3.2.0' #'2.8.0'
-      google.dependency 'AdMobPubMaticAdapter', '3.1.0'#, '2.1.1'
+      #google.dependency 'AdMobPubMaticAdapter', '3.1.0'#, '2.1.1'
       #google.dependency 'smaato-ios-sdk'#, '22.6.0'
       #google.dependency 'smaato-ios-sdk-mediation-admob'#, '10.10.0.0'
       
