@@ -9,8 +9,8 @@
                         "extra": {
                             "aps_banner_slot_id": "006a35c3-db1b-408f-b319-b57257c98528"
                         },
-                        "id": "87fba0f9c1dd424e",
-                        "platform": "max",
+                        "id": "ca-app-pub-3940256099942544/2435281174",
+                        "platform": "admob",
                         "priority": 1
                     }
                 ],
@@ -24,8 +24,8 @@
                 "enable": true,
                 "ids": [
                     {
-                        "id": "6d08993290f1b1f9",
-                        "platform": "max",
+                        "id": "ca-app-pub-3940256099942544/4411468910",
+                        "platform": "admob",
                         "priority": 1
                     }
                 ],
@@ -38,8 +38,8 @@
                 "enable": true,
                 "ids": [
                     {
-                        "id": "05908cc0642c1769",
-                        "platform": "max",
+                        "id": "ca-app-pub-3940256099942544/1712485313",
+                        "platform": "admob",
                         "priority": 1
                     }
                 ],

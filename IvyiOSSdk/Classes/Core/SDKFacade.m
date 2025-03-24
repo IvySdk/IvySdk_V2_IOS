@@ -601,9 +601,10 @@ static NSString * CRASH_EMAIL_ADDR;
                 data = [SDKJSONHelper getJsonDataFrom:fileName bundle:nil extension:@"json" AESKey:SDK_CONFIG_KEY];
             }
             if(!data){
-                data = [SDKJSONHelper getJsonDataFrom:@"default" bundle:nil];
+//                data = [SDKJSONHelper getJsonDataFrom:@"default" bundle:nil];
 
 //                data = [SDKJSONHelper getJsonDataFrom:@"default" bundle:nil extension:@"json" AESKey:SDK_CONFIG_KEY];
+                data = [SDKJSONHelper getJsonDataFrom:@"default" bundle:nil extension:@"json" AESKey:nil];
             }
             
             if(data) {
@@ -760,7 +761,7 @@ static NSString * CRASH_EMAIL_ADDR;
 //    }
     
     if (self.config) {
-        NSString* v_api = @"16";//[self.config objectForKey:@"v_api"];
+        NSString* v_api = [self.config objectForKey:@"v_api"];
         //https://gameconfig.ivymobile.com/api/external/v1/distribution/remote_config/edata
         NSString* baseUrl = @"https://backend.ivymobile.com/api/external/v1/distribution/remote_config/edata";
         NSMutableDictionary *params = [[NSMutableDictionary alloc]init];
@@ -769,7 +770,7 @@ static NSString * CRASH_EMAIL_ADDR;
         [params setObject:[self getConfig:SDK_CONFIG_KEY_UUID] forKey:@"user_id"];
         [params setObject:[self getConfig:SDK_CONFIG_KEY_VERSION_CODE] forKey:@"app_version"];
         [params setObject:[self getConfig:SDK_CONFIG_KEY_APP_ID] forKey:@"app_id"];
-        [params setObject:@"999999994" forKey:@"app_id"];
+        [params setObject:self->_appid forKey:@"app_id"];
         [params setObject:@"default_json" forKey:@"param"];
         [params setObject:@(0) forKey:@"brotli"];
         NSURL *url = [NSURL URLWithString:baseUrl];
@@ -2360,7 +2361,7 @@ static NSString * CRASH_EMAIL_ADDR;
     [[NSUserDefaults standardUserDefaults] setInteger:_opCount forKey:APP_OPEN];
     
     [[UIApplication sharedApplication] setApplicationIconBadgeNumber:0];
-    [self _initConfig];
+//    [self _initConfig];
     if (_config) {
         @try {
             CRASH_EMAIL_ADDR = [_config objectForKey:@"crash"];
@@ -2478,8 +2479,8 @@ static NSString * CRASH_EMAIL_ADDR;
                     [[NSUserDefaults standardUserDefaults] synchronize];
                 }
             }];
-            [self _initPayment];
-            [self _initGameCenter];
+//            [self _initPayment];
+//            [self _initGameCenter];
             
 #ifdef FACEBOOK
             [[FBSDKApplicationDelegate sharedInstance] application:application didFinishLaunchingWithOptions:launchOptions];

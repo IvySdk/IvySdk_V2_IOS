@@ -40,31 +40,15 @@
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
             uuid = "504455B0-8561-4F88-8F4B-CA309B90A60E"
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../IvyiOSSdk/Classes/Core/SDKFacade.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "707"
-            endingLineNumber = "707"
+            startingLineNumber = "708"
+            endingLineNumber = "708"
             landmarkName = "-_syncConfig"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "D9F5343D-3ACC-4FCC-9842-546C657A10E4"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "../IvyiOSSdk/Classes/Core/SDKFacade.m"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "603"
-            endingLineNumber = "603"
-            landmarkName = "-_initConfig"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -78,8 +62,8 @@
             filePath = "../IvyiOSSdk/Classes/Core/SDKFacade.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "780"
-            endingLineNumber = "780"
+            startingLineNumber = "781"
+            endingLineNumber = "781"
             landmarkName = "-_getConfigUrl"
             landmarkType = "7">
          </BreakpointContent>
@@ -110,8 +94,8 @@
             filePath = "../IvyiOSSdk/Classes/Core/SDKFacade.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "4116"
-            endingLineNumber = "4116"
+            startingLineNumber = "4117"
+            endingLineNumber = "4117"
             landmarkName = "-pay:payload:"
             landmarkType = "7">
          </BreakpointContent>
@@ -142,25 +126,9 @@
             filePath = "../IvyiOSSdk/Classes/Core/SDKFacade.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1077"
-            endingLineNumber = "1077"
+            startingLineNumber = "1078"
+            endingLineNumber = "1078"
             landmarkName = "-_initGdpr:"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "4840D97B-B0BE-4D0F-A949-16A075EB9E01"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "../IvyiOSSdk/Classes/Core/SDKFacade.m"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "590"
-            endingLineNumber = "590"
-            landmarkName = "-_initConfig"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -183,22 +151,6 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "78D6B106-252F-4541-A3F2-497DF1E06471"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "../IvyiOSSdk/Classes/Core/SDKFacade.m"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1821"
-            endingLineNumber = "1821"
-            landmarkName = "-showInterstitialAd:"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
             uuid = "8868E799-9AE5-4CDF-991D-C6EABC84C81E"
             shouldBeEnabled = "No"
             ignoreCount = "0"
@@ -206,9 +158,25 @@
             filePath = "../IvyiOSSdk/Classes/Core/SDKFacade.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "4110"
-            endingLineNumber = "4110"
+            startingLineNumber = "4111"
+            endingLineNumber = "4111"
             landmarkName = "-pay:payload:"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "0D51A75E-A384-4EAB-93F6-442D6A24F643"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../IvyiOSSdk/Classes/Core/SDKFacade.m"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "1441"
+            endingLineNumber = "1441"
+            landmarkName = "-getAdModule:withTag:"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
