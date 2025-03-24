@@ -329,7 +329,9 @@ static NSString * CRASH_EMAIL_ADDR;
         [self _initConfig];
         [self _syncConfig];
         [self _initAIHelp];
-        
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [self _checkCMPAndATT];
+        });
         self->_initLaterTimer = [SDKTimer startTimer:5 interval:1 onComplete:^{
             [self->_initLaterTimer stop];
             self->_initLaterTimer = nil;
@@ -2569,9 +2571,9 @@ static NSString * CRASH_EMAIL_ADDR;
 
 - (void)_checkCMPAndATT
 {
-    //    if (_hasInitedAd) {
-    //        return;
-    //    }
+        if (_hasInitedAd) {
+            return;
+        }
     //    @try {
     //#if HasUMP
     //        [self initUmpRequest];
@@ -2582,7 +2584,7 @@ static NSString * CRASH_EMAIL_ADDR;
     //    } @catch (NSException *exception) {
     //
     //    }
-    //    self->_hasInitedAd = true;
+        self->_hasInitedAd = true;
     BOOL useLocalGuide = [[self getConf:@"local_gdpr_guide"] boolValue];
     [SDKGDPRUtil setupGDPR:useLocalGuide vc:self.rootVC];
 }
