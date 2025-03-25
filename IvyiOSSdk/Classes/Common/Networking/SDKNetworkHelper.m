@@ -85,7 +85,7 @@ static BOOL _isOpenLog;   // 是否已开启日志打印
         _sessionManager.responseSerializer = [SDKJSONResponseSerializer serializer];
         _sessionManager.responseSerializer.acceptableContentTypes = [NSSet setWithObjects:@"application/json", @"application/xhtml+xml", @"application/xml", @"text/html", @"text/json", @"text/plain", @"text/javascript", @"text/xml", @"image/*", @"video/mp4", nil];
         // 打开状态栏的等待菊花
-        _sessionManager.requestSerializer.timeoutInterval = 60.f;
+        _sessionManager.requestSerializer.timeoutInterval = 10.f;
         [_sessionManagerMap setObject:_sessionManager forKey:key];
     }
     if (jsonResponse) {

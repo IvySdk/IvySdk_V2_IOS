@@ -103,6 +103,10 @@
                     if (callback) {
                         callback([verifyResult boolValue]);
                     }
+                } else {
+                    if (callback) {
+                        callback(FALSE);
+                    }
                 }
             } else{
                 NSString* reason = @"empty response";
