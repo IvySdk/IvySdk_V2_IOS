@@ -87,8 +87,8 @@
     [data setObject:[[SDKFacade sharedInstance] getConfig:SDK_CONFIG_KEY_APP_ID] forKey:@"app_id"];
     [data setObject:[[SDKFacade sharedInstance] getConfig:SDK_CONFIG_KEY_COUNTRY] forKey:@"country"];
     [data setObject:[[SDKFacade sharedInstance] getConfig:SDK_CONFIG_KEY_UUID] forKey:@"uuid"];
-    [data setObject:productIdentifier forKey:@"productIdentifier"];
-    [data setObject:transactionIdentifier forKey:@"transactionIdentifier"];
+    [data setObject:productIdentifier forKey:@"product_identifier"];
+    [data setObject:transactionIdentifier forKey:@"transaction_identifier"];
     [data setObject:merchant_transaction_id forKey:@"merchant_transaction_id"];
     [data setObject:receipt forKey:@"receipt"];
     [params setObject:data forKey:@"data"];
