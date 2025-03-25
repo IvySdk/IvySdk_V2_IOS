@@ -156,14 +156,19 @@
     NSString* str;
     switch(idx) {
         case 0://Start AD
-            for (int i=0; i<10; i++) {
-                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                    [[SDKFacade sharedInstance] showInterstitialAd:SDK_ADTAG_DEFAULT];
-                 });
-                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                    [[SDKFacade sharedInstance] showInterstitialAd:SDK_ADTAG_DEFAULT];
-                 });
-            }
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                NSString* data = [[SDKFacade sharedInstance] getPaymentDatas];
+                NSLog(@"%@", data);
+             });
+      
+//            for (int i=0; i<10; i++) {
+//                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+//                    [[SDKFacade sharedInstance] showInterstitialAd:SDK_ADTAG_DEFAULT];
+//                 });
+//                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+//                    [[SDKFacade sharedInstance] showInterstitialAd:SDK_ADTAG_DEFAULT];
+//                 });
+//            }
             break;
         case 1://Pause AD
             for (int i=0; i<10; i++) {

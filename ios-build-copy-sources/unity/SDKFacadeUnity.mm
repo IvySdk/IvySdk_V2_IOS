@@ -952,7 +952,7 @@ extern "C" {
     const char * getPaymentDatas()
     {
         NSString *data = [[SDKFacade sharedInstance] getPaymentDatas];
-        return returnStr(data ? [data UTF8String] : "{}");
+        return returnStr(data ? [data UTF8String] : "[]");
     }
     
     int* getPurchasedIds()

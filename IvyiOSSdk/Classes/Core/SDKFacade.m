@@ -4167,17 +4167,33 @@ static NSString * CRASH_EMAIL_ADDR;
 //                return;
 //            }
             if (sdkPayUtil != nil) {
-                
+                NSString* formattedPrice = [[SDKIAPHelper sharedHelper] getLocalePrice:_product];
+                NSString *currency = @"USD";
+                @try {
+                    if (@available(iOS 10.0, *)) {
+                        currency = [_product priceLocale].currencyCode;
+                    } else {
+                        // Fallback on earlier versions
+                        currency = [[[_product priceLocale].localeIdentifier componentsSeparatedByString:@"="] objectAtIndex:1];
+                    }
+                    
+                } @catch (NSException *exception) {
+                    DLog(@"Exception: %@", [exception description]);
+                } @catch (NSError *error) {
+                    DLog(@"Error: %@", [error localizedDescription]);
+                } @finally {
+                    currency = @"USD";
+                }
                 NSMutableDictionary* goodsData = [[NSMutableDictionary alloc] init];
                 [goodsData setObject:payId forKey:@"pay_id"];
                 [goodsData setObject:[_product productIdentifier] forKey:@"id"];
                 [goodsData setObject:payload?:@"" forKey:@"payload"];
-                [goodsData setObject:[_product priceLocale] forKey:@"price"];
+                [goodsData setObject:formattedPrice forKey:@"price"];
                 [goodsData setObject:[_product price] forKey:@"price_amount"];
                 [goodsData setObject:[_product localizedTitle] forKey:@"name"];
                 [goodsData setObject:[_product localizedTitle] forKey:@"title"];
                 [goodsData setObject:[_product localizedDescription] forKey:@"desc"];
-                [goodsData setObject:@"" forKey:@"currency"];
+                [goodsData setObject:currency forKey:@"currency"];
                 NSDictionary *payment = [self getPaymentData:paymentId];
                 NSNumber *usd = [payment objectForKey:@"usd"];
                 [goodsData setObject:[usd stringValue] ?: @"0" forKey:@"usd"];
@@ -4527,6 +4543,7 @@ static NSString * CRASH_EMAIL_ADDR;
 
 -(NSString *)getPaymentDatas
 {
+    
     return [SDKJSONHelper toJSONString:_paymentData];
 }
 
