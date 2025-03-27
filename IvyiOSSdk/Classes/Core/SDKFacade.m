@@ -556,9 +556,7 @@ static NSString * CRASH_EMAIL_ADDR;
         }
     } @catch (NSException *exception) {
         DLog(@"[sdk] error : %@", exception.description);
-#if DEBUG
-        [EasyTextView showErrorText:exception.description];
-#endif
+
     } @finally {
     }
     _hasInitAfter = true;
@@ -616,7 +614,6 @@ static NSString * CRASH_EMAIL_ADDR;
                 self.gts = @"0";
             } else {
 #if DEBUG
-                [EasyTextView showErrorText:@"本地缺少default.json文件，请检查配置！"];
                 DLog(@"[sdk] local default.json format incorrect!");
 #endif
             }
@@ -710,9 +707,7 @@ static NSString * CRASH_EMAIL_ADDR;
         } failure:^(NSError *error) {
             //请求失败
             DLog(@"[sdk] error : %@", [error localizedDescription]);
-#if DEBUG
-            [EasyTextView showErrorText:error.localizedDescription];
-#endif
+
             [[SDKFacade sharedInstance] _initAfterNetwork];
         }];
     }
@@ -860,9 +855,7 @@ static NSString * CRASH_EMAIL_ADDR;
         [self setDefaults:[_config objectForKey:@"remoteconfig"]];
     } @catch (NSException *exception) {
         DLog(@"%@", exception.description);
-#if DEBUG
-        [EasyTextView showErrorText:exception.description];
-#endif
+
     } @finally {
     }
 #if APPLOVIN_MAX
@@ -913,9 +906,7 @@ static NSString * CRASH_EMAIL_ADDR;
         }
     } @catch (NSException *exception) {
         DLog(@"%@", exception.description);
-#if DEBUG
-        [EasyTextView showErrorText:exception.description];
-#endif
+
     } @finally {
     }
     @try {
@@ -951,9 +942,7 @@ static NSString * CRASH_EMAIL_ADDR;
         }
     } @catch (NSException *exception) {
         DLog(@"%@", exception.description);
-#if DEBUG
-        [EasyTextView showErrorText:exception.description];
-#endif
+
     } @finally {
     }
     @try {
@@ -997,9 +986,7 @@ static NSString * CRASH_EMAIL_ADDR;
         }
     } @catch (NSException *exception) {
         DLog(@"%@", exception.description);
-#if DEBUG
-        [EasyTextView showErrorText:exception.description];
-#endif
+
     } @finally {
     }
 #ifdef FIREBASE
@@ -1028,9 +1015,7 @@ static NSString * CRASH_EMAIL_ADDR;
         }
     } @catch (NSException *exception) {
         DLog(@"%@", exception.description);
-#if DEBUG
-        [EasyTextView showErrorText:exception.description];
-#endif
+
     } @finally {
     }
 #endif
@@ -2387,9 +2372,7 @@ static NSString * CRASH_EMAIL_ADDR;
             [self _setUserProps];
         } @catch (NSException *exception) {
             DLog(@"[sdk] error : %@", exception.description);
-#if DEBUG
-            [EasyTextView showErrorText:exception.description];
-#endif
+
         } @finally {
         }
         @try {
@@ -2519,9 +2502,7 @@ static NSString * CRASH_EMAIL_ADDR;
 #endif
         } @catch (NSException *exception) {
             DLog(@"[sdk] error : %@", exception.description);
-#if DEBUG
-            [EasyTextView showErrorText:exception.description];
-#endif
+
         } @finally {
             _hasInit = YES;
         }
@@ -7267,11 +7248,11 @@ static NSString * CRASH_EMAIL_ADDR;
             [[UIApplication sharedApplication] openURL:url options:@{} completionHandler:nil];
             return YES;
         } else {
-            [EasyTextView showErrorText:@"未安装手机QQ或安装的版本不支持。"];
+        
             return NO;
         }
     } else {
-        [EasyTextView showErrorText:@"QQ号不正确或者不存在。"];
+        
         return NO;
     }
 }
