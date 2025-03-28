@@ -455,7 +455,7 @@ This is the IvySdk for ios platform.
   s.subspec 'AIHelp' do |aihelp|
       aihelp.source_files = 'IvyiOSSdk/Classes/AIHelp/**/*'
       aihelp.public_header_files = 'IvyiOSSdk/Classes/AIHelp/**/*.h'
-      aihelp.dependency 'AIHelpSDK', '4.5.0' #'4.3.8'
+      aihelp.dependency 'AIHelpSDK', '~> 5.4.0' #'4.3.8'
       aihelp.dependency 'IvyiOSSdk/Core'
       aihelp.xcconfig = { "GCC_PREPROCESSOR_DEFINITIONS" => 'AIHelp=1' }
   end

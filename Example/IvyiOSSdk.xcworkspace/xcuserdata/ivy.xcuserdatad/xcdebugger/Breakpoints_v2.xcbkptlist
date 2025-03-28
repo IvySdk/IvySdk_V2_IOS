@@ -190,8 +190,8 @@
             filePath = "../IvyiOSSdk/Classes/AIHelp/SDKAIHelp.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "29"
-            endingLineNumber = "29"
+            startingLineNumber = "30"
+            endingLineNumber = "30"
             landmarkName = "-showAIHelp:message:tag:welcome:"
             landmarkType = "7">
          </BreakpointContent>
@@ -206,24 +206,24 @@
             filePath = "../IvyiOSSdk/Classes/AIHelp/SDKAIHelp.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "102"
-            endingLineNumber = "102"
-            landmarkName = "AIHelp_onInitializationCallback(isSuccess, message)"
-            landmarkType = "9">
+            startingLineNumber = "131"
+            endingLineNumber = "131"
+            landmarkName = "SDKAIHelp"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "6DCC9013-68A4-463D-9F37-2A0079951845"
+            uuid = "9886582D-9ABF-4211-ACD1-8FC6557B0BE2"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../IvyiOSSdk/Classes/AIHelp/SDKAIHelp.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "115"
-            endingLineNumber = "115"
+            startingLineNumber = "152"
+            endingLineNumber = "152"
             landmarkName = "-initWithkey:withAppId:withUrl:"
             landmarkType = "7">
          </BreakpointContent>

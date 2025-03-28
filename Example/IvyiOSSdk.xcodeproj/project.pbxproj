@@ -500,9 +500,6 @@
 				"${PODS_CONFIGURATION_BUILD_DIR}/IvyiOSSdk/IvyiOSSdk-Core.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/IvyiOSSdk/IvyiOSSdk-Admob.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/MintegralAdSDK/MTGSDK.bundle",
-				"${PODS_CONFIGURATION_BUILD_DIR}/OpenWrapSDK/OpenWrapSDKPrivacyManifest.bundle",
-				"${PODS_ROOT}/OpenWrapSDK/OpenWrapSDK/POBResources.bundle",
-				"${PODS_ROOT}/OpenWrapSDK/OpenWrapSDK/POBNativeResources.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/UnityAds/UnityAdsResources.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/VungleAds/VungleAds.bundle",
 				"${PODS_ROOT}/YandexMobileAds/YandexMobileAds.xcframework/YandexMobileAdsBundle.bundle",
@@ -522,9 +519,6 @@
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/IvyiOSSdk-Core.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/IvyiOSSdk-Admob.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/MTGSDK.bundle",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/OpenWrapSDKPrivacyManifest.bundle",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/POBResources.bundle",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/POBNativeResources.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/UnityAdsResources.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/VungleAds.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/YandexMobileAdsBundle.bundle",
@@ -592,7 +586,6 @@
 				"${PODS_XCFRAMEWORKS_BUILD_DIR}/FBSDKLoginKit/FBSDKLoginKit.framework/FBSDKLoginKit",
 				"${PODS_XCFRAMEWORKS_BUILD_DIR}/FBSDKShareKit/FBSDKShareKit.framework/FBSDKShareKit",
 				"${PODS_XCFRAMEWORKS_BUILD_DIR}/InMobiSDK/InMobiSDK.framework/InMobiSDK",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/OpenWrapSDK/OpenWrap/OMSDK_Pubmatic.framework/OMSDK_Pubmatic",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
@@ -647,7 +640,6 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FBSDKLoginKit.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FBSDKShareKit.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/InMobiSDK.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/OMSDK_Pubmatic.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;

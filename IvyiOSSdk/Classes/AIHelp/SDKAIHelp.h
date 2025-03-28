@@ -26,5 +26,6 @@
 
 -(nonnull id) initWithkey:(nonnull NSString*)key withAppId:(nonnull NSString*)appId withUrl:(nonnull NSString*)url;
 
+-(BOOL)isOnlyOnce;
 
 @end

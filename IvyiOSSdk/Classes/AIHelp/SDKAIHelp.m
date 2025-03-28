@@ -21,13 +21,15 @@
     NSString* url;
     BOOL isInited;
     NSString* AIHelpTimer;
+    BOOL onlyOnce;
 }
 
 static SDKAIHelp* helper;
 
 -(void)showAIHelp:(nonnull NSString*) entranceId message:(nonnull NSString*)meta tag:(nullable NSString*) tags welcome:(nullable NSString*) wMsg{
     AIHelpUserConfigBuilder *userBuilder = [[AIHelpUserConfigBuilder alloc] init];
-    userBuilder.userId = [SDKHelper getIDFVString];//[[[UIDevice currentDevice] identifierForVendor] UUIDString];
+
+//    userBuilder.userId = [SDKHelper getIDFVString];//[[[UIDevice currentDevice] identifierForVendor] UUIDString];
     userBuilder.userTags = [self parseArray:tags];
     userBuilder.customData = [self parseDictionary:meta];
     [AIHelpSupportSDK updateUserInfo:userBuilder.build];
@@ -36,6 +38,7 @@ static SDKAIHelp* helper;
     builder.entranceId = entranceId;
     builder.welcomeMessage = wMsg;
     [AIHelpSupportSDK showWithApiConfig:builder.build];
+    
 }
 
 -(NSArray*) parseArray:(nullable NSString*) tags {
@@ -69,20 +72,46 @@ static SDKAIHelp* helper;
     return self->isInited;
 }
 
-void AIHelp_unreadMessageArrived(const int count)  {
-    [[SDKFacade sharedInstance] unreadMessageCount:count];
+//void AIHelp_unreadMessageArrived(const int count)  {
+//    [[SDKFacade sharedInstance] unreadMessageCount:count];
+//}
+
+- (BOOL)isOnlyOnce
+{
+    return self->onlyOnce;
+}
+
+void AIHelp_unreadMessageArrived(const char* eventData, void(*acknowledge)(const char* ackData)) {
+//    [[SDKFacade sharedInstance] unreadMessageCount:count];
+    @try {
+        NSString* str = [NSString stringWithFormat:@"%s", eventData];
+        NSData* data = [str dataUsingEncoding:NSUTF8StringEncoding];
+        NSError* error = nil;
+        NSDictionary* dict = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&error];
+        if (error) {
+            
+        } else {
+            int count = [[dict objectForKey:@"taskCount"] intValue];
+            [[SDKFacade sharedInstance] unreadMessageCount:count];
+        }
+       
+    } @catch (NSException *exception) {
+        
+    }
 }
 
 -(void)loadAIHelpUnreadMessageCount:(BOOL) onlyOnce{
-    [AIHelpSupportSDK startUnreadMessageCountPolling:AIHelp_unreadMessageArrived];
-    static dispatch_once_t loadUnread;
-    dispatch_once(&loadUnread, ^{
-        [[SDKGCDTimer sharedInstance] scheduleGCDTimerWithName:self->AIHelpTimer interval:5*60
-                                                         queue:dispatch_get_main_queue() repeats:!onlyOnce
-                                                        option:SDKGCDTimerOptionCancelPrevAction action:^{
-            [AIHelpSupportSDK startUnreadMessageCountPolling:AIHelp_unreadMessageArrived];
-        }];
-    });
+    self->onlyOnce = onlyOnce;
+//    [AIHelpSupportSDK startUnreadMessageCountPolling:AIHelp_unreadMessageArrived];
+    [AIHelpSupportSDK registerAsyncListener:AIHelp_unreadMessageArrived eventType:AIHelpEventMessageArrival];
+//    static dispatch_once_t loadUnread;
+//    dispatch_once(&loadUnread, ^{
+//        [[SDKGCDTimer sharedInstance] scheduleGCDTimerWithName:self->AIHelpTimer interval:5*60
+//                                                         queue:dispatch_get_main_queue() repeats:!onlyOnce
+//                                                        option:SDKGCDTimerOptionCancelPrevAction action:^{
+//            [AIHelpSupportSDK startUnreadMessageCountPolling:AIHelp_unreadMessageArrived];
+//        }];
+//    });
 }
 
 -(void)stopLoadAIHelpUnreadMessageCount{
@@ -98,8 +127,9 @@ void AIHelp_unreadMessageArrived(const int count)  {
     [AIHelpSupportSDK updateSDKLanguage:lang];
 }
 
-void AIHelp_onInitializationCallback(const bool isSuccess, const char * message) {
+void AIHelp_onInitializationCallback(const char* eventData, void(*acknowledge)(const char* ackData)) {
     helper->isInited = TRUE;
+    [AIHelpSupportSDK unregisterAsyncListenerWithEvent:AIHelpEventInitialization];
 }
 
 - (nonnull id)initWithkey:(nonnull NSString *)key withAppId:(nonnull NSString *)appId withUrl:(nonnull NSString *)url {
@@ -112,10 +142,15 @@ void AIHelp_onInitializationCallback(const bool isSuccess, const char * message)
         self->url = url;
         self->isInited = FALSE;
         helper = self;
-        [AIHelpSupportSDK initWithApiKey:key
-                                  domainName:url
-                                          appId:appId];
-        [AIHelpSupportSDK setOnInitializedCallback:AIHelp_onInitializationCallback];
+//        [AIHelpSupportSDK initWithApiKey:key
+//                                  domainName:url
+//                                          appId:appId];
+//        [AIHelpSupportSDK setOnInitializedCallback:AIHelp_onInitializationCallback];
+//        
+//
+        [AIHelpSupportSDK registerAsyncListener:AIHelp_onInitializationCallback eventType:AIHelpEventInitialization];
+        [AIHelpSupportSDK initializeWithDomainName:url appId:appId];
+        
         self->AIHelpTimer =@"query unread message";
       
     }

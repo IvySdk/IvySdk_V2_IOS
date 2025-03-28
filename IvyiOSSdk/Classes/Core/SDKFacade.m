@@ -342,7 +342,7 @@ static NSString * CRASH_EMAIL_ADDR;
         //        self->_adInitLaterTimer = [SDKTimer startTimer:60 interval:1 onComplete:nil onUpdate:^{
         //            [[SDKFacade sharedInstance] _checkCMPAndATT];
         //        }];
-        
+        UILabel* label = [[UILabel alloc] init];
         [self onInitialized];
     });
 }
