@@ -183,16 +183,48 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "B373BF04-6668-4236-9100-404F2F3599B9"
+            uuid = "FDBA6FEC-E9CC-4671-9127-A20CCA62E912"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "IvyiOSSdk/SDKViewController.mm"
+            filePath = "../IvyiOSSdk/Classes/AIHelp/SDKAIHelp.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "161"
-            endingLineNumber = "161"
-            landmarkName = "-uiButtonPressed:"
+            startingLineNumber = "29"
+            endingLineNumber = "29"
+            landmarkName = "-showAIHelp:message:tag:welcome:"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "DD49D65A-15FB-4D63-8331-970B5C52A275"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../IvyiOSSdk/Classes/AIHelp/SDKAIHelp.m"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "102"
+            endingLineNumber = "102"
+            landmarkName = "AIHelp_onInitializationCallback(isSuccess, message)"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "6DCC9013-68A4-463D-9F37-2A0079951845"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../IvyiOSSdk/Classes/AIHelp/SDKAIHelp.m"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "115"
+            endingLineNumber = "115"
+            landmarkName = "-initWithkey:withAppId:withUrl:"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

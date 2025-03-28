@@ -2350,7 +2350,7 @@ static NSString * CRASH_EMAIL_ADDR;
     [[NSUserDefaults standardUserDefaults] setInteger:_opCount forKey:APP_OPEN];
     
     [[UIApplication sharedApplication] setApplicationIconBadgeNumber:0];
-//    [self _initConfig];
+    [self _initConfig];
     if (_config) {
         @try {
             CRASH_EMAIL_ADDR = [_config objectForKey:@"crash"];

@@ -1,4 +1,9 @@
 {
+    "AIHelp": {
+          "appId": "ivymobile1_platform_752f351b6c99e8d11dc1fa282c980b99",
+          "appKey": "IVYMOBILE1_app_5099dc7fba2243888bfb0c02efe9ef13",
+          "domain": "ivymobile1.aihelp.net"
+      },
     "ads": {
         "banner": {
             "default": {
