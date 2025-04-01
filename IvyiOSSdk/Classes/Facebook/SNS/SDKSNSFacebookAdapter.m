@@ -140,6 +140,21 @@
                     }
                 }
             }];
+        } else {
+            FBSDKProfile *profile = [FBSDKProfile currentProfile];
+            self->user_id = profile.userID;
+            if (self->_meDetails) {
+//                        [self snsLoginSuccess];
+                [self verifyLoginStatus];
+            } else {
+                [self fetchMe:YES];
+            }
+            if (!self->_friends) {
+                [self fetchFriends:NO];
+            }
+            if (handler) {
+                handler(nil);
+            }
         }
     } else {
         [self snsLoginFailure:@"No facebook app installed!"];
