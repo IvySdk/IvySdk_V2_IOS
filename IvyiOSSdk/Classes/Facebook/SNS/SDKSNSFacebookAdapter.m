@@ -49,15 +49,16 @@
 
 -(BOOL)isFBInstalled
 {
-#if TARGET_IPHONE_SIMULATOR
-    return YES;
-#else
-    if (!_hasCheckFb) {
-        _isFBInstalled = [[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"fb://"]];
-        _hasCheckFb = YES;
-    }
-    return _isFBInstalled;
-#endif
+    return true;
+//#if TARGET_IPHONE_SIMULATOR
+//    return YES;
+//#else
+//    if (!_hasCheckFb) {
+//        _isFBInstalled = [[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"fb://"]];
+//        _hasCheckFb = YES;
+//    }
+//    return _isFBInstalled;
+//#endif
 }
 
 -(void)_updateContent:(NSNotification *)notification
@@ -72,13 +73,21 @@
         [self snsLoginFailure:@"had not installed facebook app"];
         return NO;
     }
-    BOOL isLogin = [FBSDKAccessToken currentAccessToken] ? YES : NO;
+    BOOL isLogin = NO;
+    FBSDKAccessToken* token = [FBSDKAccessToken currentAccessToken];
+    if (token) {
+        if ([token isExpired]) {
+            isLogin = NO;
+        } else {
+            isLogin = YES;
+        }
+    }
     if (!loginManager) {
         loginManager = [[FBSDKLoginManager alloc] init];
     }
     if (isLogin) {
         if(!_meDetails) {
-            [self fetchMe:NO];
+            [self fetchMe:YES];
             [self fetchFriends:NO];
         } else {
             [self verifyLoginStatus];
@@ -94,7 +103,15 @@
 {
     if ([self isFBInstalled]) {
         [super login:nil];
-        BOOL isLogin = [FBSDKAccessToken currentAccessToken] ? YES : NO;
+        BOOL isLogin = NO;
+        FBSDKAccessToken* token = [FBSDKAccessToken currentAccessToken];
+        if (token) {
+            if ([token isExpired]) {
+                isLogin = NO;
+            } else {
+                isLogin = YES;
+            }
+        }
         if(!isLogin) {
             UIViewController *vc = [[UIApplication sharedApplication] keyWindow].rootViewController;
             NSArray *permissions = nil;
