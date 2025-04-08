@@ -94,9 +94,9 @@
             filePath = "../IvyiOSSdk/Classes/Core/SDKFacade.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "4102"
-            endingLineNumber = "4102"
-            landmarkName = "-pay:payload:"
+            startingLineNumber = "4131"
+            endingLineNumber = "4131"
+            landmarkName = "-checkPurchasedOnline:data:payload:productIdentifier:transactionIdentifier:"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -158,9 +158,9 @@
             filePath = "../IvyiOSSdk/Classes/Core/SDKFacade.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "4096"
-            endingLineNumber = "4096"
-            landmarkName = "-pay:payload:"
+            startingLineNumber = "4125"
+            endingLineNumber = "4125"
+            landmarkName = "-checkPurchasedOnline:data:payload:productIdentifier:transactionIdentifier:"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

@@ -2842,7 +2842,7 @@ static NSString * CRASH_EMAIL_ADDR;
     NSString* uid = [info objectForKey:@"uid"];
     NSString* idToken = [info objectForKey:@"idToken"];
     if (uid && idToken) {
-        [self verifyAppleSignIn:idToken userId:uid];
+        [self checkAppleCredentialStateForUserID:uid idToken:idToken];
         return;
     }
     if (self->_snsDelegate && [self->_snsDelegate respondsToSelector:@selector(signInAppleFailure:)]) {
@@ -2850,6 +2850,35 @@ static NSString * CRASH_EMAIL_ADDR;
             [self->_snsDelegate signInAppleFailure:@"verify failed"];
         });
     }
+}
+
+- (void)checkAppleCredentialStateForUserID:(NSString *)userID idToken:(NSString *)idToken {
+    ASAuthorizationAppleIDProvider *provider = [[ASAuthorizationAppleIDProvider alloc] init];
+    [provider getCredentialStateForUserID:userID completion:^(ASAuthorizationAppleIDProviderCredentialState credentialState, NSError * _Nullable error) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (error) {
+                if (self->_snsDelegate && [self->_snsDelegate respondsToSelector:@selector(signInAppleFailure:)]) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [self->_snsDelegate signInAppleFailure:@"verify failed"];
+                    });
+                }
+                return;
+            }
+            if (credentialState == ASAuthorizationAppleIDProviderCredentialAuthorized) {
+                NSLog(@"授权有效");
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self verifyAppleSignIn:idToken userId:userID];
+                });
+            } else {
+                NSLog(@"授权已失效，需重新登录");
+                if (self->_snsDelegate && [self->_snsDelegate respondsToSelector:@selector(signInAppleFailure:)]) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [self->_snsDelegate signInAppleFailure:@"verify failed"];
+                    });
+                }
+            }
+        });
+    }];
 }
 
 - (void)signoutApple
