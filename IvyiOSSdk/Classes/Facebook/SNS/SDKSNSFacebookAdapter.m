@@ -76,11 +76,12 @@
     BOOL isLogin = NO;
     FBSDKAccessToken* token = [FBSDKAccessToken currentAccessToken];
     if (token) {
-        if ([token isExpired]) {
-            isLogin = NO;
-        } else {
-            isLogin = YES;
-        }
+//        if ([token isExpired]) {
+//            isLogin = NO;
+//        } else {
+//            isLogin = YES;
+//        }
+        isLogin = YES;
     }
     if (!loginManager) {
         loginManager = [[FBSDKLoginManager alloc] init];
@@ -110,11 +111,12 @@
         BOOL isLogin = NO;
         FBSDKAccessToken* token = [FBSDKAccessToken currentAccessToken];
         if (token) {
-            if ([token isExpired]) {
-                isLogin = NO;
-            } else {
-                isLogin = YES;
-            }
+//            if ([token isExpired]) {
+//                isLogin = NO;
+//            } else {
+//                isLogin = YES;
+//            }
+            isLogin = YES;
         }
         if(!isLogin) {
             UIViewController *vc = [[UIApplication sharedApplication] keyWindow].rootViewController;

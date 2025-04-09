@@ -96,7 +96,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "4131"
             endingLineNumber = "4131"
-            landmarkName = "-checkPurchasedOnline:data:payload:productIdentifier:transactionIdentifier:"
+            landmarkName = "-pay:payload:"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -160,7 +160,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "4125"
             endingLineNumber = "4125"
-            landmarkName = "-checkPurchasedOnline:data:payload:productIdentifier:transactionIdentifier:"
+            landmarkName = "-pay:payload:"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
