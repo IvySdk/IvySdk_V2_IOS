@@ -3806,7 +3806,7 @@ static NSString * CRASH_EMAIL_ADDR;
                 NSString *productIdentifier = [obj objectForKey:@"productIdentifier"];
                 NSString *transactionIdentifier = [obj objectForKey:@"transactionIdentifier"];
                 NSString *receipt = [obj objectForKey:@"receipt"];
-                if (sdkPayUtil) {
+                if (sdkPayUtil && merchantTransactionId != nil) {
 //                    [self checkPurchasedOnline:payId.intValue data:data payload:payload productIdentifier:productIdentifier transactionIdentifier:transactionIdentifier];
                     [sdkPayUtil verifyOrder:merchantTransactionId receipt:receipt transactionIdentifier:transactionIdentifier productIdentifier:productIdentifier callback:^(BOOL status) {
                         if (status) {
@@ -3843,7 +3843,7 @@ static NSString * CRASH_EMAIL_ADDR;
                     NSString *productIdentifier = [obj objectForKey:@"productIdentifier"];
                     NSString *transactionIdentifier = [obj objectForKey:@"transactionIdentifier"];
                     NSString *receipt = [obj objectForKey:@"receipt"];
-                    if (sdkPayUtil) {
+                    if (sdkPayUtil && merchantTransactionId != nil) {
     //                    [self checkPurchasedOnline:payId.intValue data:data payload:payload productIdentifier:productIdentifier transactionIdentifier:transactionIdentifier];
                         [sdkPayUtil verifyOrder:merchantTransactionId receipt:receipt transactionIdentifier:transactionIdentifier productIdentifier:productIdentifier callback:^(BOOL status) {
                             if (status) {
@@ -3886,7 +3886,7 @@ static NSString * CRASH_EMAIL_ADDR;
     }
 }
 
--(void)storeFailedCheckPayment:(int)payId data:(NSString *)data payload:(NSString *)payload productIdentifier:(NSString *)productIdentifier transactionIdentifier:(NSString *)transactionIdentifier
+-(void)storeFailedCheckPayment:(int)payId data:(NSString *)data payload:(NSString *)payload productIdentifier:(NSString *)productIdentifier transactionIdentifier:(NSString *)transactionIdentifier merchantTransactionId:(NSString*)merchantTransactionId
 {
     NSMutableArray *arr = (NSMutableArray *)[[SDKCache cache] objectForKey:SDK_RECHECCK_PAY];
     if (!arr) {
@@ -3900,11 +3900,12 @@ static NSString * CRASH_EMAIL_ADDR;
     }
     [obj setObject:productIdentifier forKey:@"productIdentifier"];
     [obj setObject:transactionIdentifier forKey:@"transactionIdentifier"];
+    [obj setObject:merchantTransactionId forKey:@"merchantTransactionId"];
     [arr addObject:obj];
     [[SDKCache cache] setObject:arr forKey:SDK_RECHECCK_PAY];
 }
 
--(void)storeFailedConsumedPayment:(int)payId payload:(NSString *)payload transactionIdentifier:(NSString *)transactionIdentifier
+-(void)storeFailedConsumedPayment:(int)payId payload:(NSString *)payload transactionIdentifier:(NSString *)transactionIdentifier merchantTransactionId:(NSString*)merchantTransactionId
 {
     NSMutableArray *arr = (NSMutableArray *)[[SDKCache cache] objectForKey:SDK_FAILED_CONSUMED_PAY];
     if (!arr) {
@@ -3916,6 +3917,7 @@ static NSString * CRASH_EMAIL_ADDR;
         [obj setObject:payload forKey:@"payload"];
     }
     [obj setObject:transactionIdentifier forKey:@"transactionIdentifier"];
+    [obj setObject:merchantTransactionId forKey:@"merchantTransactionId"];
     [arr addObject:obj];
     [[SDKCache cache] setObject:arr forKey:SDK_FAILED_CONSUMED_PAY];
 }
@@ -4242,7 +4244,7 @@ static NSString * CRASH_EMAIL_ADDR;
                             [params setValuesForKeysWithDictionary:[self->_paymentData objectForKey:payId]];
                             NSString *data = [SDKJSONHelper toJSONString:params];
                             
-                            [self storeFailedCheckPayment:paymentId data:data payload:payload productIdentifier:productIdentifier transactionIdentifier:transactionIdentifier];
+                            [self storeFailedCheckPayment:paymentId data:data payload:payload productIdentifier:productIdentifier transactionIdentifier:transactionIdentifier merchantTransactionId:merchant_transaction_id];
                             
                             [self->sdkPayUtil verifyOrder:merchant_transaction_id receipt:receiptBase64 transactionIdentifier:transactionIdentifier productIdentifier:productIdentifier callback:^(BOOL status) {
                                 if (status) {
@@ -4273,7 +4275,7 @@ static NSString * CRASH_EMAIL_ADDR;
                         //支付成功or重复支付
                         NSString *productIdentifier = [[SDKIAPHelper sharedHelper] getProductIdentifierFromTransaction:transcation];
                         productIdentifier = productIdentifier ? productIdentifier : product.productIdentifier;
-                        [self storeFailedCheckPayment:paymentId data:nil payload:payload productIdentifier:productIdentifier transactionIdentifier:transactionIdentifier];
+                        [self storeFailedCheckPayment:paymentId data:nil payload:payload productIdentifier:productIdentifier transactionIdentifier:transactionIdentifier merchantTransactionId:@""];
                         [[SDKIAPHelper sharedHelper] checkReceipt:[NSData dataWithContentsOfURL:[[NSBundle mainBundle] appStoreReceiptURL]] AndSharedSecret:self->_paymentSharedSecret onCompletion:^(NSDictionary *response, NSError *error) {
                             [self verifyPaymentResponse:response paymentId:paymentId payload:payload productIdentifier:productIdentifier transactionIdentifier:transactionIdentifier merchantTransactionId:nil];
                         }];
