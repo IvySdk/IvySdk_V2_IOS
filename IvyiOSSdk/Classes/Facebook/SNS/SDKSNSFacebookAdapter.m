@@ -87,7 +87,11 @@
     }
     if (isLogin) {
         if(!_meDetails) {
-            [self fetchMe:YES];
+            [self fetchMe:YES callback:^(BOOL result) {
+                if (result) {
+                    [self verifyLoginStatus];
+                }
+            }];
             [self fetchFriends:NO];
         } else {
             [self verifyLoginStatus];
@@ -147,7 +151,11 @@
 //                        [self snsLoginSuccess];
                         [self verifyLoginStatus];
                     } else {
-                        [self fetchMe:YES];
+                        [self fetchMe:YES callback:^(BOOL result) {
+                            if (result) {
+                                [self verifyLoginStatus];
+                            }
+                        }];
                     }
                     if (!self->_friends) {
                         [self fetchFriends:NO];
@@ -164,7 +172,11 @@
 //                        [self snsLoginSuccess];
                 [self verifyLoginStatus];
             } else {
-                [self fetchMe:YES];
+                [self fetchMe:YES callback:^(BOOL result) {
+                    if (result) {
+                        [self verifyLoginStatus];
+                    }
+                }];
             }
             if (!self->_friends) {
                 [self fetchFriends:NO];
@@ -241,25 +253,31 @@
 //    [FBSDKGameRequestDialog showWithContent:content delegate:self];
 }
 
--(void)fetchMe:(BOOL)callback
+-(void)fetchMe:(BOOL)response callback:(void(^)(BOOL result))callback
 {
     if ([self isFBInstalled]) {
-        if (_isFetchingMe) {
-            return;
-        }
-        _isFetchingMe = YES;
+//        if (_isFetchingMe) {
+//            return;
+//        }
+//        _isFetchingMe = YES;
         FBSDKGraphRequest *request = [[FBSDKGraphRequest alloc] initWithGraphPath:@"me" parameters:@{@"fields": @"first_name,last_name,name,id"}];
         [request startWithCompletion:^(id<FBSDKGraphRequestConnecting>  _Nullable connection, id  _Nullable result, NSError * _Nullable error) {
-            self->_isFetchingMe = NO;
+//            self->_isFetchingMe = NO;
             if (!error && result) {
                 self->_meDetails = result;
-                [self verifyLoginStatus];
+//                [self verifyLoginStatus];
 //                if (callback) {
 //                    [self snsLoginSuccess];
 //                }
-            } else {
                 if (callback) {
+                    callback(YES);
+                }
+            } else {
+                if (response) {
                     [self snsLoginFailure:error.localizedDescription];
+                }
+                if (callback) {
+                    callback(NO);
                 }
             }
         }];
@@ -502,7 +520,7 @@
 -(NSString *)meFirstName
 {
     if (!_meDetails) {
-        [self fetchMe:NO];
+        [self fetchMe:NO callback:nil];
     }
     return _meDetails ? [_meDetails objectForKey:@"first_name"] : @"";
 }
@@ -510,7 +528,7 @@
 -(NSString *)meLastName
 {
     if (!_meDetails) {
-        [self fetchMe:NO];
+        [self fetchMe:NO callback:nil];
     }
     return _meDetails ? [_meDetails objectForKey:@"last_name"] : @"";
 }
@@ -518,7 +536,7 @@
 -(NSString *)meName
 {
     if (!_meDetails) {
-        [self fetchMe:NO];
+        [self fetchMe:NO callback:nil];
     }
     return _meDetails ? [_meDetails objectForKey:@"name"] : @"";
 }
@@ -526,7 +544,7 @@
 -(NSString *)meId
 {
     if (!_meDetails) {
-        [self fetchMe:NO];
+        [self fetchMe:NO callback:nil];
     }
     return _meDetails ? [_meDetails objectForKey:@"id"] : @"";
 }
@@ -544,7 +562,8 @@
 -(nonnull NSString *)me
 {
     if (!_meDetails) {
-        [self fetchMe:NO];
+//        [self fetchMe:NO];
+        [self fetchMe:NO callback:nil];
     }
     return _meDetails ? [NSString stringWithFormat:@"{\"id\":\"%@\", \"name\":\"%@\", \"picture\":\"%@\"}", [self meId], [self meName], [self mePictureURL]] : @"{}";
 }
