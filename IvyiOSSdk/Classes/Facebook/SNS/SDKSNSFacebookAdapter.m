@@ -338,7 +338,7 @@
         return;
     }
     NSString* token = [[FBSDKAccessToken currentAccessToken] tokenString];
-    DLog(@"facebook token string: %@", token);
+    NSLog(@"facebook token string: %@", token);
     NSString* url = @"https://verify.ivymobile.com/api/external/v1/login/facebook";
     NSMutableDictionary* params = [[NSMutableDictionary alloc] init];
     [params setObject:@NO forKey:@"is_encrypt"];
@@ -347,7 +347,19 @@
     [data setObject:token forKey:@"token"];
     [params setObject:data forKey:@"data"];
     [[SDKNetworkHelper sharedHelper] POST:url parameters:params jsonRequest:TRUE jsonResponse:TRUE success:^(id  _Nullable responseObject) {
-        [self snsLoginSuccess];
+        @try {
+            if (responseObject && [responseObject isKindOfClass:[NSDictionary class]]) {
+                NSDictionary* response = (NSDictionary*)responseObject;
+                int code = [[response objectForKey:@"code"] intValue];
+                if (code == 0) {
+                    [self snsLoginSuccess];
+                } else {
+                    [self snsLoginFailure:@"verify failed"];
+                }
+            }
+        } @catch (NSException *exception) {
+            [self snsLoginFailure:@"verify failed"];
+        }
     } failure:^(NSError * _Nullable error) {
         [self snsLoginFailure:@"verify failed"];
     }];
