@@ -126,6 +126,14 @@
                 permissions = [_permissions componentsSeparatedByString:@","];
             }
             permissions = permissions ? permissions : @[@"public_profile", @"email", @"user_friends"];
+            
+//            FBSDKLoginConfiguration *configuration =
+//            [[FBSDKLoginConfiguration alloc] initWithPermissions:permissions tracking:FBSDKLoginTrackingEnabled nonce:@"123"];
+//            
+//            [loginManager logInFromViewController:vc configuration:configuration completion:^(FBSDKLoginManagerLoginResult * _Nullable result, NSError * _Nullable error) {
+//                            
+//            }];
+            
 //            loginManager.loginBehavior = FBSDKLoginBehaviorBrowser;
             [loginManager logInWithPermissions:permissions fromViewController:vc handler:^(FBSDKLoginManagerLoginResult *result, NSError *error) {
                 NSString *errorStr = nil;
@@ -338,6 +346,11 @@
         [self snsLoginFailure:@"invalid appid"];
         return;
     }
+    NSString* authToken = @"";
+    if ([FBSDKAuthenticationToken currentAuthenticationToken]) {
+        authToken = [[FBSDKAuthenticationToken currentAuthenticationToken] tokenString];
+    }
+    
     NSString* token = [[FBSDKAccessToken currentAccessToken] tokenString];
     NSLog(@"facebook token string: %@", token);
     [EasyTextView showText:token];
@@ -347,6 +360,7 @@
     NSMutableDictionary* data = [[NSMutableDictionary alloc] init];
     [data setObject:appid forKey:@"app_id"];
     [data setObject:token forKey:@"token"];
+    [data setObject:authToken forKey:@"auth_token"];
     [params setObject:data forKey:@"data"];
     [[SDKNetworkHelper sharedHelper] POST:url parameters:params jsonRequest:TRUE jsonResponse:TRUE success:^(id  _Nullable responseObject) {
         @try {

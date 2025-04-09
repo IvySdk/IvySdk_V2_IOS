@@ -145,7 +145,7 @@ This is the IvySdk for ios platform.
   s.subspec 'FacebookCore' do |facebook|
       facebook.source_files = 'IvyiOSSdk/Classes/Facebook/Core/*'
       facebook.public_header_files = 'IvyiOSSdk/Classes/Facebook/Core/*.h'
-      facebook.dependency 'FBSDKCoreKit', FBVersion
+      facebook.dependency 'FBSDKCoreKit'#, FBVersion
       facebook.dependency 'IvyiOSSdk/Core'
       facebook.xcconfig = { "GCC_PREPROCESSOR_DEFINITIONS" => 'FACEBOOK=1' }
 #      facebook.user_target_xcconfig = { "LIBRARY_SEARCH_PATHS" => ['${PODS_CONFIGURATION_BUILD_DIR}/FBAEMKit', '${PODS_CONFIGURATION_BUILD_DIR}/FBSDKCoreKit'], "HEADER_SEARCH_PATHS" => ['${PODS_ROOT}/Headers/Public/FBAEMKit', '${PODS_ROOT}/Headers/Public/FBSDKCoreKit']}
@@ -155,8 +155,8 @@ This is the IvySdk for ios platform.
   s.subspec 'FacebookSNS' do |facebook|
       facebook.source_files = 'IvyiOSSdk/Classes/Facebook/SNS/*'
       facebook.public_header_files = 'IvyiOSSdk/Classes/Facebook/SNS/*.h'
-      facebook.dependency 'FBSDKShareKit', FBVersion
-      facebook.dependency 'FBSDKLoginKit', FBVersion
+      facebook.dependency 'FBSDKShareKit'#, FBVersion
+      facebook.dependency 'FBSDKLoginKit'#, FBVersion
       facebook.dependency 'IvyiOSSdk/FacebookCore'
       facebook.xcconfig = { "GCC_PREPROCESSOR_DEFINITIONS" => 'FACEBOOK=1' }
 #      facebook.user_target_xcconfig = { "LIBRARY_SEARCH_PATHS" => ['${PODS_CONFIGURATION_BUILD_DIR}/FBSDKShareKit', '${PODS_CONFIGURATION_BUILD_DIR}/FBSDKLoginKit'], "HEADER_SEARCH_PATHS" => ['${PODS_ROOT}/Headers/Public/FBSDKShareKit', '${PODS_ROOT}/Headers/Public/FBSDKLoginKit']}

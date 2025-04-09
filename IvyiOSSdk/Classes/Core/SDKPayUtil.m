@@ -80,13 +80,40 @@
 
 - (void)verifyOrder:(NSString *)merchant_transaction_id receipt:(NSString *)receipt transactionIdentifier:(NSString *)transactionIdentifier productIdentifier:(NSString *)productIdentifier callback:(void (^)(BOOL))callback
 {
+    if (merchant_transaction_id == nil || receipt == nil || transactionIdentifier == nil || productIdentifier == nil) {
+        if (callback) {
+            callback(FALSE);
+        }
+        return;
+    }
+    NSString* appid =[[SDKFacade sharedInstance] getConfig:SDK_CONFIG_KEY_APP_ID];
+    if (appid == nil) {
+        if (callback) {
+            callback(FALSE);
+        }
+        return;
+    }
+    NSString* country = [[SDKFacade sharedInstance] getConfig:SDK_CONFIG_KEY_COUNTRY];
+    if (country == nil) {
+        if (callback) {
+            callback(FALSE);
+        }
+        return;
+    }
+    NSString* uuid = [[SDKFacade sharedInstance] getConfig:SDK_CONFIG_KEY_UUID] ;
+    if (uuid == nil) {
+        if (callback) {
+            callback(FALSE);
+        }
+        return;
+    }
     NSString* url = [NSString stringWithFormat:@"%@%@", verifyUrl, @"verify_apple"];
     NSMutableDictionary* params = [[NSMutableDictionary alloc] init];
     [params setObject:@NO forKey:@"is_encrypt"];
     NSMutableDictionary* data = [[NSMutableDictionary alloc] init];
-    [data setObject:[[SDKFacade sharedInstance] getConfig:SDK_CONFIG_KEY_APP_ID] forKey:@"app_id"];
-    [data setObject:[[SDKFacade sharedInstance] getConfig:SDK_CONFIG_KEY_COUNTRY] forKey:@"country"];
-    [data setObject:[[SDKFacade sharedInstance] getConfig:SDK_CONFIG_KEY_UUID] forKey:@"uuid"];
+    [data setObject:appid forKey:@"app_id"];
+    [data setObject:country forKey:@"country"];
+    [data setObject:uuid forKey:@"uuid"];
     [data setObject:productIdentifier forKey:@"product_identifier"];
     [data setObject:transactionIdentifier forKey:@"transaction_identifier"];
     [data setObject:merchant_transaction_id forKey:@"merchant_transaction_id"];
