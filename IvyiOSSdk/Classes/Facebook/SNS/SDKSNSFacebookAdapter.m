@@ -74,30 +74,35 @@
         [self snsLoginFailure:@"had not installed facebook app"];
         return NO;
     }
-    BOOL isLogin = NO;
-    FBSDKAccessToken* token = [FBSDKAccessToken currentAccessToken];
-    if (token) {
-//        if ([token isExpired]) {
-//            isLogin = NO;
-//        } else {
-//            isLogin = YES;
-//        }
-        isLogin = YES;
-    }
+    BOOL isLogin = [self getLoginState];
     if (!loginManager) {
         loginManager = [[FBSDKLoginManager alloc] init];
     }
     if (isLogin) {
-        if(!_meDetails) {
+        FBSDKProfile *profile = [FBSDKProfile currentProfile];
+        self->user_id = profile.userID;
+        if (self->user_id) {
+            [[SDKCache cache] setObject:self->user_id forKey:@"fb_user_id"];
             [self fetchMe:YES callback:^(BOOL result) {
                 if (result) {
                     [self verifyLoginStatus];
                 }
             }];
-            [self fetchFriends:NO];
+            
         } else {
-            [self verifyLoginStatus];
+            [self snsLoginFailure:@""];
         }
+        
+//        if(!_meDetails) {
+//            [self fetchMe:YES callback:^(BOOL result) {
+//                if (result) {
+//                    [self verifyLoginStatus];
+//                }
+//            }];
+//            [self fetchFriends:NO];
+//        } else {
+//            [self verifyLoginStatus];
+//        }
     } else {
         [self snsLoginFailure:@""];
     }
@@ -105,20 +110,29 @@
     return false;
 }
 
+-(BOOL)getLoginState
+{
+    FBSDKAuthenticationToken* token = [FBSDKAuthenticationToken currentAuthenticationToken];
+    if (token) {
+        return YES;
+    }
+    return NO;
+}
+
+-(NSString*)getAuthToken
+{
+    FBSDKAuthenticationToken* token = [FBSDKAuthenticationToken currentAuthenticationToken];
+    if (token) {
+        return [token tokenString];
+    }
+    return nil;
+}
+
 -(void)login:(sns_login_result)handler;
 {
     if ([self isFBInstalled]) {
         [super login:nil];
-        BOOL isLogin = NO;
-        FBSDKAccessToken* token = [FBSDKAccessToken currentAccessToken];
-        if (token) {
-//            if ([token isExpired]) {
-//                isLogin = NO;
-//            } else {
-//                isLogin = YES;
-//            }
-            isLogin = YES;
-        }
+        BOOL isLogin = [self getLoginState];
         if(!isLogin) {
             UIViewController *vc = [[UIApplication sharedApplication] keyWindow].rootViewController;
             NSArray *permissions = nil;
@@ -127,15 +141,11 @@
             }
             permissions = permissions ? permissions : @[@"public_profile", @"email", @"user_friends"];
             
-//            FBSDKLoginConfiguration *configuration =
-//            [[FBSDKLoginConfiguration alloc] initWithPermissions:permissions tracking:FBSDKLoginTrackingEnabled nonce:@"123"];
-//            
-//            [loginManager logInFromViewController:vc configuration:configuration completion:^(FBSDKLoginManagerLoginResult * _Nullable result, NSError * _Nullable error) {
-//                            
-//            }];
+            FBSDKLoginConfiguration *configuration =
+            [[FBSDKLoginConfiguration alloc] initWithPermissions:permissions tracking:FBSDKLoginTrackingEnabled nonce:@"123"];
             
-//            loginManager.loginBehavior = FBSDKLoginBehaviorBrowser;
-            [loginManager logInWithPermissions:permissions fromViewController:vc handler:^(FBSDKLoginManagerLoginResult *result, NSError *error) {
+            [loginManager logInFromViewController:vc configuration:configuration completion:^(FBSDKLoginManagerLoginResult * _Nullable result, NSError * _Nullable error) {
+                
                 NSString *errorStr = nil;
                 if (error) {
                     errorStr = [error localizedDescription];
@@ -150,6 +160,7 @@
                     }
                     return;
                 }
+                
                 if(errorStr) {
                     [self snsLoginFailure:errorStr];
                     if (handler) {
@@ -158,43 +169,124 @@
                 } else {
                     FBSDKProfile *profile = [FBSDKProfile currentProfile];
                     self->user_id = profile.userID;
-                    if (self->_meDetails) {
-//                        [self snsLoginSuccess];
-                        [self verifyLoginStatus];
-                    } else {
+                    if (self->user_id) {
+                        [[SDKCache cache] setObject:self->user_id forKey:@"fb_user_id"];
                         [self fetchMe:YES callback:^(BOOL result) {
                             if (result) {
                                 [self verifyLoginStatus];
                             }
                         }];
+                        if (handler) {
+                            handler(nil);
+                        }
+                    } else{
+                        errorStr = @"invalid user id";
+                        [self snsLoginFailure:errorStr];
+                        if (handler) {
+                            handler(error);
+                        }
                     }
-                    if (!self->_friends) {
-                        [self fetchFriends:NO];
-                    }
-                    if (handler) {
-                        handler(nil);
-                    }
+                    
+                    
+//                    if (self->_meDetails) {
+////                        [self snsLoginSuccess];
+//                        [self verifyLoginStatus];
+//                    } else {
+//                        [self fetchMe:YES callback:^(BOOL result) {
+//                            if (result) {
+//                                [self verifyLoginStatus];
+//                            }
+//                        }];
+//                    }
+//                    if (!self->_friends) {
+//                        [self fetchFriends:NO];
+//                    }
+                    
                 }
+                
             }];
+            
+//            loginManager.loginBehavior = FBSDKLoginBehaviorBrowser;
+//            [loginManager logInWithPermissions:permissions fromViewController:vc handler:^(FBSDKLoginManagerLoginResult *result, NSError *error) {
+//                NSString *errorStr = nil;
+//                if (error) {
+//                    errorStr = [error localizedDescription];
+//                } else if (result.isCancelled) {
+//                    NSError* loginCancelError =[[NSError alloc]
+//                                                initWithDomain:@"SDKSNSFacebookAdapter"
+//                                                code:-1
+//                                                userInfo:@{NSLocalizedDescriptionKey: @"Facebook log cancelled."}];
+//                    [self snsLoginCancel];
+//                    if (handler) {
+//                        handler(loginCancelError);
+//                    }
+//                    return;
+//                }
+//                if(errorStr) {
+//                    [self snsLoginFailure:errorStr];
+//                    if (handler) {
+//                        handler(error);
+//                    }
+//                } else {
+//                    FBSDKProfile *profile = [FBSDKProfile currentProfile];
+//                    self->user_id = profile.userID;
+//                    if (self->_meDetails) {
+////                        [self snsLoginSuccess];
+//                        [self verifyLoginStatus];
+//                    } else {
+//                        [self fetchMe:YES callback:^(BOOL result) {
+//                            if (result) {
+//                                [self verifyLoginStatus];
+//                            }
+//                        }];
+//                    }
+//                    if (!self->_friends) {
+//                        [self fetchFriends:NO];
+//                    }
+//                    if (handler) {
+//                        handler(nil);
+//                    }
+//                }
+//            }];
         } else {
+//            FBSDKProfile *profile = [FBSDKProfile currentProfile];
+//            self->user_id = profile.userID;
+//            if (self->_meDetails) {
+////                        [self snsLoginSuccess];
+//                [self verifyLoginStatus];
+//            } else {
+//                [self fetchMe:YES callback:^(BOOL result) {
+//                    if (result) {
+//                        [self verifyLoginStatus];
+//                    }
+//                }];
+//            }
+////            if (!self->_friends) {
+////                [self fetchFriends:NO];
+////            }
+//            if (handler) {
+//                handler(nil);
+//            }
+            
             FBSDKProfile *profile = [FBSDKProfile currentProfile];
             self->user_id = profile.userID;
-            if (self->_meDetails) {
-//                        [self snsLoginSuccess];
-                [self verifyLoginStatus];
-            } else {
+            if (self->user_id) {
+                [[SDKCache cache] setObject:self->user_id forKey:@"fb_user_id"];
                 [self fetchMe:YES callback:^(BOOL result) {
                     if (result) {
                         [self verifyLoginStatus];
                     }
                 }];
+                if (handler) {
+                    handler(nil);
+                }
+            } else{
+                [self snsLoginFailure:@""];
+                if (handler) {
+                    handler(nil);
+                }
             }
-            if (!self->_friends) {
-                [self fetchFriends:NO];
-            }
-            if (handler) {
-                handler(nil);
-            }
+            
         }
     } else {
         [self snsLoginFailure:@"No facebook app installed!"];
@@ -216,6 +308,8 @@
                 }
             }];
         }
+        [[SDKCache cache] removeObjectForKey:@"fb_user_id"];
+        [[SDKCache cache] removeObjectForKey:@"fb_me_detail"];
         _isFetchingMe = NO;
         _meDetails = nil;
         _friends = nil;
@@ -280,6 +374,7 @@
 //                if (callback) {
 //                    [self snsLoginSuccess];
 //                }
+                [[SDKCache cache] setObject:self->_meDetails forKey:@"fb_me_detail"];
                 if (callback) {
                     callback(YES);
                 }
