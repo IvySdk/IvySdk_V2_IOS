@@ -448,7 +448,7 @@
     
     NSString* token = [[FBSDKAccessToken currentAccessToken] tokenString];
     NSLog(@"facebook token string: %@", token);
-    [EasyTextView showText:token];
+    //[EasyTextView showText:token];
     NSString* url = @"https://verify.ivymobile.com/api/external/v1/login/facebook";
     NSMutableDictionary* params = [[NSMutableDictionary alloc] init];
     [params setObject:@NO forKey:@"is_encrypt"];
