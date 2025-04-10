@@ -200,12 +200,12 @@
         DLog(@"[IAP]Transaction error: %@ %ld", transaction.error.localizedDescription, (long)transaction.error.code);
     }
     
-    if ([SKPaymentQueue defaultQueue]) {
-        [[SKPaymentQueue defaultQueue] finishTransaction: transaction];
+//    if ([SKPaymentQueue defaultQueue]) {
+//        [[SKPaymentQueue defaultQueue] finishTransaction: transaction];
         if(_buyProductCompleteBlock) {
             _buyProductCompleteBlock(transaction);
         }
-    }
+//    }
 }
 
 - (void)paymentQueue:(SKPaymentQueue *)queue updatedTransactions:(NSArray<SKPaymentTransaction *> *)transactions
