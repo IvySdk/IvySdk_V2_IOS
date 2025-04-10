@@ -37,6 +37,10 @@
 
 + (void)checkAdmobGDPR:(UIViewController *)vc
 {
+    
+    [[SDKFacade sharedInstance] callInitAd];
+    return;
+    
     if ([UMPConsentInformation.sharedInstance canRequestAds]) {
         [[SDKFacade sharedInstance] callInitAd];
         return;
