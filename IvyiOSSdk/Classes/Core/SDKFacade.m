@@ -3682,6 +3682,7 @@ static NSString * CRASH_EMAIL_ADDR;
                case SKPaymentTransactionStateFailed:
                    // 交易失败
 //                   [self failedTransaction:transaction];
+                   [[SKPaymentQueue defaultQueue] finishTransaction:transaction];
                    break;
 
                case SKPaymentTransactionStateRestored:
