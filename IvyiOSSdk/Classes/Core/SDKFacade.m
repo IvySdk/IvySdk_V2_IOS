@@ -3686,6 +3686,7 @@ static NSString * CRASH_EMAIL_ADDR;
 
                case SKPaymentTransactionStateRestored:
                    // 交易已恢复（针对可恢复的商品）
+                   [self completeTransaction:transaction];
 //                   [self restoreTransaction:transaction];
                    break;
 
@@ -3717,6 +3718,7 @@ static NSString * CRASH_EMAIL_ADDR;
         }
         if (transcation.error) {
             //支付出错
+            [[SKPaymentQueue defaultQueue] finishTransaction:transcation];
             NSString* reason = [transcation.error localizedFailureReason];
             reason = reason ? reason : [transcation.error description];
             [self payFailure:paymentId productIdentifer:productIdentifier transactionIdentifier:transactionIdentifier merchant_transaction_id:merchant_transaction_id error:reason];
@@ -3742,7 +3744,7 @@ static NSString * CRASH_EMAIL_ADDR;
             NSString *data = [SDKJSONHelper toJSONString:params];
             
             [self storeFailedCheckPayment:paymentId data:data payload:payload productIdentifier:productIdentifier transactionIdentifier:transactionIdentifier merchantTransactionId:merchant_transaction_id];
-            
+            [[SKPaymentQueue defaultQueue] finishTransaction:transcation];
             [self->sdkPayUtil verifyOrder:merchant_transaction_id receipt:receiptBase64 transactionIdentifier:transactionIdentifier productIdentifier:productIdentifier callback:^(BOOL status) {
                 if (status) {
                     NSMutableDictionary* response = [[NSMutableDictionary alloc] init];
@@ -3755,6 +3757,7 @@ static NSString * CRASH_EMAIL_ADDR;
             
         } else if(transcation.transactionState == SKPaymentTransactionStateFailed) {
             //支付失败
+            [[SKPaymentQueue defaultQueue] finishTransaction:transcation];
             [self payFailure:paymentId productIdentifer:productIdentifier transactionIdentifier:transactionIdentifier merchant_transaction_id:merchant_transaction_id error:@"payment trans failed!"];
         }
     } @catch (NSException *exception) {
@@ -3768,6 +3771,7 @@ static NSString * CRASH_EMAIL_ADDR;
     
     //Convert JSON String to NSDictionary
     int status = [response[@"status"] intValue];
+   
     if(status==0)
     {
         //        [[SDKIAPHelper sharedHelper] provideContentWithTransaction:trans];
@@ -4327,6 +4331,7 @@ static NSString * CRASH_EMAIL_ADDR;
                         NSString *transactionIdentifier = transcation.transactionIdentifier;
                         if (transcation.error) {
                             //支付出错
+                            [[SKPaymentQueue defaultQueue] finishTransaction:transcation];
                             NSString* reason = [transcation.error localizedFailureReason];
                             reason = reason ? reason : [transcation.error description];
                             [self payFailure:paymentId productIdentifer:product.productIdentifier transactionIdentifier:transactionIdentifier merchant_transaction_id:merchant_transaction_id error:reason];
@@ -4353,7 +4358,7 @@ static NSString * CRASH_EMAIL_ADDR;
                             NSString *data = [SDKJSONHelper toJSONString:params];
                             
                             [self storeFailedCheckPayment:paymentId data:data payload:payload productIdentifier:productIdentifier transactionIdentifier:transactionIdentifier merchantTransactionId:merchant_transaction_id];
-                            
+                            [[SKPaymentQueue defaultQueue] finishTransaction:transcation];
                             [self->sdkPayUtil verifyOrder:merchant_transaction_id receipt:receiptBase64 transactionIdentifier:transactionIdentifier productIdentifier:productIdentifier callback:^(BOOL status) {
                                 if (status) {
                                     NSMutableDictionary* response = [[NSMutableDictionary alloc] init];
@@ -4366,6 +4371,7 @@ static NSString * CRASH_EMAIL_ADDR;
                             
                         } else if(transcation.transactionState == SKPaymentTransactionStateFailed) {
                             //支付失败
+                            [[SKPaymentQueue defaultQueue] finishTransaction:transcation];
                             [self payFailure:paymentId productIdentifer:product.productIdentifier transactionIdentifier:transactionIdentifier merchant_transaction_id:merchant_transaction_id error:@"payment trans failed!"];
                         }
                     }];
@@ -4376,6 +4382,7 @@ static NSString * CRASH_EMAIL_ADDR;
                     NSString *transactionIdentifier = transcation.transactionIdentifier;
                     if (transcation.error) {
                         //支付出错
+                        [[SKPaymentQueue defaultQueue] finishTransaction:transcation];
                         NSString* reason = [transcation.error localizedFailureReason];
                         reason = reason ? reason : [transcation.error description];
                         [self payFailure:paymentId productIdentifer:product.productIdentifier transactionIdentifier:transactionIdentifier merchant_transaction_id:nil error:reason];
@@ -4384,11 +4391,13 @@ static NSString * CRASH_EMAIL_ADDR;
                         NSString *productIdentifier = [[SDKIAPHelper sharedHelper] getProductIdentifierFromTransaction:transcation];
                         productIdentifier = productIdentifier ? productIdentifier : product.productIdentifier;
                         [self storeFailedCheckPayment:paymentId data:nil payload:payload productIdentifier:productIdentifier transactionIdentifier:transactionIdentifier merchantTransactionId:@""];
+                        [[SKPaymentQueue defaultQueue] finishTransaction:transcation];
                         [[SDKIAPHelper sharedHelper] checkReceipt:[NSData dataWithContentsOfURL:[[NSBundle mainBundle] appStoreReceiptURL]] AndSharedSecret:self->_paymentSharedSecret onCompletion:^(NSDictionary *response, NSError *error) {
                             [self verifyPaymentResponse:response paymentId:paymentId payload:payload productIdentifier:productIdentifier transactionIdentifier:transactionIdentifier merchantTransactionId:nil];
                         }];
                     } else if(transcation.transactionState == SKPaymentTransactionStateFailed) {
                         //支付失败
+                        [[SKPaymentQueue defaultQueue] finishTransaction:transcation];
                         [self payFailure:paymentId productIdentifer:product.productIdentifier transactionIdentifier:transactionIdentifier merchant_transaction_id:nil error:@"payment trans failed!"];
                     }
                 }];

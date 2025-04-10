@@ -167,9 +167,9 @@
     
     [self recordTransaction: transaction];
     
-    if ([SKPaymentQueue defaultQueue]) {
-        [[SKPaymentQueue defaultQueue] finishTransaction: transaction];
-    }
+//    if ([SKPaymentQueue defaultQueue]) {
+//        [[SKPaymentQueue defaultQueue] finishTransaction: transaction];
+//    }
     
     if(_buyProductCompleteBlock)
     {
@@ -182,15 +182,15 @@
     [self recordTransaction: transaction];
     [self provideContentWithTransaction:transaction];
     
-    if ([SKPaymentQueue defaultQueue]) {
-        [[SKPaymentQueue defaultQueue] finishTransaction: transaction];
-        
+//    if ([SKPaymentQueue defaultQueue]) {
+//        [[SKPaymentQueue defaultQueue] finishTransaction: transaction];
+//        
         
         if(_buyProductCompleteBlock!=nil)
         {
             _buyProductCompleteBlock(transaction);
         }
-    }
+//    }
 }
 
 - (void)failedTransaction:(SKPaymentTransaction *)transaction {
