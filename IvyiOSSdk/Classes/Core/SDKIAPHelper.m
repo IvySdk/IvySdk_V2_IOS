@@ -240,12 +240,19 @@
     return NO;
 }
 
-- (void)buyProduct:(SKProduct *)productIdentifier onCompletion:(IAPbuyProductCompleteResponseBlock)completion {
+- (void)buyProduct:(SKProduct *)productIdentifier payload:(NSDictionary *)payload onCompletion:(IAPbuyProductCompleteResponseBlock)completion
+{
     
     self.buyProductCompleteBlock = completion;
     
     self.restoreCompletedBlock = nil;
-    SKPayment *payment = [SKPayment paymentWithProduct:productIdentifier];
+//    SKPayment *payment = [SKPayment paymentWithProduct:productIdentifier];
+    
+    SKMutablePayment* payment = [SKMutablePayment paymentWithProduct:productIdentifier];
+    if (payload) {
+        NSData* payloadData = [NSJSONSerialization dataWithJSONObject:payload options:0 error:nil];
+        payment.applicationUsername = [[NSString alloc] initWithData:payloadData encoding:NSUTF8StringEncoding];
+    }
     
     if ([SKPaymentQueue defaultQueue]) {
         [[SKPaymentQueue defaultQueue] addPayment:payment];

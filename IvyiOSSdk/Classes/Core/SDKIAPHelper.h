@@ -35,7 +35,7 @@ typedef void (^restoreProductsCompleteResponseBlock) (SKPaymentQueue* _Nonnull p
 - (void)requestProductsWithIdentifier:(nonnull NSString *)identifier completion:(nullable IAPProductsResponseBlock)completion;
 
 //Buy Product
-- (void)buyProduct:(nonnull SKProduct *)productIdentifier onCompletion:(nullable IAPbuyProductCompleteResponseBlock)completion;
+- (void)buyProduct:(nonnull SKProduct *)productIdentifier payload:(NSDictionary*)payload onCompletion:(nullable IAPbuyProductCompleteResponseBlock)completion;
 
 //restore Products
 - (void)restoreProductsWithCompletion:(nullable restoreProductsCompleteResponseBlock)completion;

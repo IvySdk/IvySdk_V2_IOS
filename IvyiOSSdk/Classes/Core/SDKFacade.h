@@ -23,7 +23,7 @@
 #import <IvyiOSSdk/SDKFirebaseDatabaseDelegate.h>
 #import <IvyiOSSdk/SDKInAppMessageDelegate.h>
 #import <IvyiOSSdk/SDKWebviewDelegate.h>
-@interface SDKFacade : NSObject<SDKDelegate, SDKExtendDelegate, SDKRemoteConfigDelegate, SDKInAppMessageDelegate, WKScriptMessageHandler, WKNavigationDelegate>
+@interface SDKFacade : NSObject<SDKDelegate, SDKExtendDelegate, SDKRemoteConfigDelegate, SDKInAppMessageDelegate, WKScriptMessageHandler, WKNavigationDelegate, SKPaymentTransactionObserver>
 @property (nonatomic, nullable, strong, readonly) UIWindow *window;
 @property (nonatomic, nullable, strong, readonly) UIViewController *rootVC;
 @property (nonatomic, nullable, strong, readonly) UIWindow *originWindow;

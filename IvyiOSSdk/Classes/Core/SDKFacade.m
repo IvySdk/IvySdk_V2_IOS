@@ -3655,12 +3655,113 @@ static NSString * CRASH_EMAIL_ADDR;
                         }
                         
                         [self reSendFailedConsumedPayments];
+                        
+                        
+                        [[SKPaymentQueue defaultQueue] addTransactionObserver:self];
+                        
                     }
                 }];
             }
         }
     }
 }
+
+- (void)paymentQueue:(SKPaymentQueue *)queue updatedTransactions:(NSArray<SKPaymentTransaction *> *)transactions
+{
+    for (SKPaymentTransaction *transaction in transactions) {
+           switch (transaction.transactionState) {
+               case SKPaymentTransactionStatePurchasing:
+                   // 交易正在进行中
+                   break;
+
+               case SKPaymentTransactionStatePurchased:
+                   // 交易已完成，需要处理
+                   [self completeTransaction:transaction];
+                   break;
+
+               case SKPaymentTransactionStateFailed:
+                   // 交易失败
+//                   [self failedTransaction:transaction];
+                   break;
+
+               case SKPaymentTransactionStateRestored:
+                   // 交易已恢复（针对可恢复的商品）
+//                   [self restoreTransaction:transaction];
+                   break;
+
+               case SKPaymentTransactionStateDeferred:
+                   // 交易延迟（需要家长批准等）
+//                   [self deferredTransaction:transaction];
+                   break;
+
+               default:
+                   break;
+           }
+       }
+    [[SKPaymentQueue defaultQueue] removeTransactionObserver:self];
+}
+
+- (void)completeTransaction:(SKPaymentTransaction *)transcation {
+    @try {
+        NSString* customPayload = transcation.payment.applicationUsername;
+        NSData* payloadData = [customPayload dataUsingEncoding:NSUTF8StringEncoding];
+        NSDictionary* payloadDict = [NSJSONSerialization JSONObjectWithData:payloadData options:0 error:nil];
+        int paymentId = [[payloadDict objectForKey:@"pay_id"] intValue];
+        NSString* merchant_transaction_id = [payloadDict objectForKey:@"merchant_transaction_id"];
+        NSString* payload = [payloadDict objectForKey:@"payload"];
+        NSString* productIdentifier = [[SDKIAPHelper sharedHelper] getProductIdentifierFromTransaction:transcation];
+        NSString *transactionIdentifier = transcation.transactionIdentifier;
+        NSString *payId = [@(paymentId) stringValue];
+        if(!merchant_transaction_id || !productIdentifier || !transactionIdentifier){
+            return;
+        }
+        if (transcation.error) {
+            //支付出错
+            NSString* reason = [transcation.error localizedFailureReason];
+            reason = reason ? reason : [transcation.error description];
+            [self payFailure:paymentId productIdentifer:productIdentifier transactionIdentifier:transactionIdentifier merchant_transaction_id:merchant_transaction_id error:reason];
+        } else if(transcation.transactionState == SKPaymentTransactionStatePurchased || transcation.transactionState == SKPaymentTransactionStateRestored){
+            //支付成功or重复支付
+//            NSString *productIdentifier = [[SDKIAPHelper sharedHelper] getProductIdentifierFromTransaction:transcation];
+        
+            NSData *receipt = [NSData dataWithContentsOfURL:[[NSBundle mainBundle] appStoreReceiptURL]];
+            NSString *receiptBase64 = [NSString base64StringFromData:receipt length:[receipt length]];
+            NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithDictionary:@{
+                @"merchanTransactionId":merchant_transaction_id,
+                @"receipt":receiptBase64,
+                @"country":[SDKHelper getCountryCode].uppercaseString,
+                @"platform":@"ios",
+                @"payId":payId,
+                @"payload":(payload ? payload : @""),
+                @"appid":self->_appid,
+                @"transactionIdentifier":transactionIdentifier,
+                @"package": [NSBundle mainBundle].bundleIdentifier,
+                @"name":[SDKHelper getAppName],
+                @"uuid":[[[UIDevice currentDevice] identifierForVendor] UUIDString]}];
+            [params setValuesForKeysWithDictionary:[self->_paymentData objectForKey:payId]];
+            NSString *data = [SDKJSONHelper toJSONString:params];
+            
+            [self storeFailedCheckPayment:paymentId data:data payload:payload productIdentifier:productIdentifier transactionIdentifier:transactionIdentifier merchantTransactionId:merchant_transaction_id];
+            
+            [self->sdkPayUtil verifyOrder:merchant_transaction_id receipt:receiptBase64 transactionIdentifier:transactionIdentifier productIdentifier:productIdentifier callback:^(BOOL status) {
+                if (status) {
+                    NSMutableDictionary* response = [[NSMutableDictionary alloc] init];
+                    [response setObject:@(0) forKey:@"status"];
+                    [self verifyPaymentResponse:response paymentId:paymentId payload:payload productIdentifier:productIdentifier transactionIdentifier:transactionIdentifier merchantTransactionId:merchant_transaction_id];
+                } else {
+                    [self payFailure:paymentId productIdentifer:productIdentifier transactionIdentifier:transactionIdentifier merchant_transaction_id:merchant_transaction_id error:@"verify failed"];
+                }
+            }];
+            
+        } else if(transcation.transactionState == SKPaymentTransactionStateFailed) {
+            //支付失败
+            [self payFailure:paymentId productIdentifer:productIdentifier transactionIdentifier:transactionIdentifier merchant_transaction_id:merchant_transaction_id error:@"payment trans failed!"];
+        }
+    } @catch (NSException *exception) {
+        
+    }
+}
+
 
 -(void)verifyPaymentResponse:(NSDictionary *)response paymentId:(int)paymentId payload:(NSString *)payload productIdentifier:(NSString *)productIdentifier transactionIdentifier:(NSString *)transactionIdentifier merchantTransactionId:(nullable NSString*)merchantTransactionId
 {
@@ -4215,7 +4316,13 @@ static NSString * CRASH_EMAIL_ADDR;
                         [self payFailure:paymentId productIdentifer:_product.productIdentifier transactionIdentifier:nil merchant_transaction_id:nil error:@"预下单失败"];
                         return;
                     }
-                    [[SDKIAPHelper sharedHelper] buyProduct:_product onCompletion:^(SKPaymentTransaction * _Nullable transcation) {
+                    NSMutableDictionary* payloadData = [[NSMutableDictionary alloc] init];
+                    [payloadData setObject:merchant_transaction_id forKey:@"merchant_transaction_id"];
+                    if (payload) {
+                        [payloadData setObject:payload forKey:@"payload"];
+                    }
+                    [payloadData setObject:payId forKey:@"pay_id"];
+                    [[SDKIAPHelper sharedHelper] buyProduct:_product payload:payloadData onCompletion:^(SKPaymentTransaction * _Nullable transcation) {
                         __strong SKProduct *product = _product;
                         NSString *transactionIdentifier = transcation.transactionIdentifier;
                         if (transcation.error) {
@@ -4229,6 +4336,7 @@ static NSString * CRASH_EMAIL_ADDR;
                             productIdentifier = productIdentifier ? productIdentifier : product.productIdentifier;
                             NSData *receipt = [NSData dataWithContentsOfURL:[[NSBundle mainBundle] appStoreReceiptURL]];
                             NSString *receiptBase64 = [NSString base64StringFromData:receipt length:[receipt length]];
+                           
                             NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithDictionary:@{
                                 @"merchanTransactionId":merchant_transaction_id,
                                 @"receipt":receiptBase64,
@@ -4263,7 +4371,7 @@ static NSString * CRASH_EMAIL_ADDR;
                     }];
                 }];
             } else {
-                [[SDKIAPHelper sharedHelper] buyProduct:_product onCompletion:^(SKPaymentTransaction * _Nullable transcation) {
+                [[SDKIAPHelper sharedHelper] buyProduct:_product payload:nil onCompletion:^(SKPaymentTransaction * _Nullable transcation) {
                     __strong SKProduct *product = _product;
                     NSString *transactionIdentifier = transcation.transactionIdentifier;
                     if (transcation.error) {
