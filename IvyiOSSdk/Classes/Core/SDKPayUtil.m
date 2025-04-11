@@ -222,7 +222,7 @@
                         callback(unShippingData);
                     }
                 }
-            } else{
+            } else {
                 NSString* reason = @"empty response";
                 NSLog(@"PayUtil -- load unshipping data failed:%@", reason);
                 if (callback) {

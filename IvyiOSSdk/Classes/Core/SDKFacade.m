@@ -330,9 +330,11 @@ static NSString * CRASH_EMAIL_ADDR;
         [self _syncConfig];
         [self _initAIHelp];
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-//            [self _checkCMPAndATT];
+            //            [self _checkCMPAndATT];
             [self _initPayment];
             [self _initGameCenter];
+            
+            
         });
         self->_initLaterTimer = [SDKTimer startTimer:5 interval:1 onComplete:^{
             [self->_initLaterTimer stop];
@@ -2588,9 +2590,9 @@ static NSString * CRASH_EMAIL_ADDR;
         if (_hasInitAfter) {
             [self _syncConfig];
             if (_paymentData) {
-                [self recheckFailedPayments];
+              //  [self recheckFailedPayments];
             }
-            [self reSendFailedConsumedPayments];
+           // [self reSendFailedConsumedPayments];
         }
         if (_gamecenterEnable) {
             _gamecenterEnable = false;
@@ -2719,7 +2721,7 @@ static NSString * CRASH_EMAIL_ADDR;
 #ifdef FACEBOOK
         [[FBSDKAppEvents shared] activateApp];
 #endif
-        [self reSendFailedConsumedPayments];
+        //[self reSendFailedConsumedPayments];
     }
     
     if (_currentShowAd)
@@ -3572,6 +3574,7 @@ static NSString * CRASH_EMAIL_ADDR;
 
 -(void)_initPayment
 {
+    
     if(_config) {
         NSDictionary *payment = [_config objectForKey:@"payment"];
         if (payment && [payment count] > 0) {
@@ -3648,17 +3651,13 @@ static NSString * CRASH_EMAIL_ADDR;
                             [self isSubscriptionActive];
                         }
                         
-                        if (recheckDelaySeconds > 0) {
-                            [[SDKGCDTimer sharedInstance] scheduleGCDTimerWithName:@"sdk_delay_recheck_payments" interval:recheckDelaySeconds queue:dispatch_get_main_queue() repeats:NO option:SDKGCDTimerOptionCancelPrevAction action:^{
-                                [self recheckFailedPayments];
-                            }];
-                        }
+//                        if (recheckDelaySeconds > 0) {
+//                            [[SDKGCDTimer sharedInstance] scheduleGCDTimerWithName:@"sdk_delay_recheck_payments" interval:recheckDelaySeconds queue:dispatch_get_main_queue() repeats:NO option:SDKGCDTimerOptionCancelPrevAction action:^{
+//                                [self recheckFailedPayments];
+//                            }];
+//                        }
                         
-                        [self reSendFailedConsumedPayments];
-                        
-                        
-                        [[SKPaymentQueue defaultQueue] addTransactionObserver:self];
-                        
+          
                     }
                 }];
             }
@@ -3666,52 +3665,57 @@ static NSString * CRASH_EMAIL_ADDR;
     }
 }
 
-- (void)paymentQueue:(SKPaymentQueue *)queue updatedTransactions:(NSArray<SKPaymentTransaction *> *)transactions
+//- (void)paymentQueue:(SKPaymentQueue *)queue updatedTransactions:(NSArray<SKPaymentTransaction *> *)transactions
+//{
+//    [self doTransactions:transactions];
+//    [[SKPaymentQueue defaultQueue] removeTransactionObserver:self];
+//}
+-(void)doTransactions:(NSArray<SKPaymentTransaction *> *)transactions
 {
     for (SKPaymentTransaction *transaction in transactions) {
-           switch (transaction.transactionState) {
-               case SKPaymentTransactionStatePurchasing:
-                   // 交易正在进行中
-                   break;
-
-               case SKPaymentTransactionStatePurchased:
-                   // 交易已完成，需要处理
-                   [self completeTransaction:transaction];
-                   break;
-
-               case SKPaymentTransactionStateFailed:
-                   // 交易失败
-//                   [self failedTransaction:transaction];
-                   [[SKPaymentQueue defaultQueue] finishTransaction:transaction];
-                   break;
-
-               case SKPaymentTransactionStateRestored:
-                   // 交易已恢复（针对可恢复的商品）
-                   [self completeTransaction:transaction];
-//                   [self restoreTransaction:transaction];
-                   break;
-
-               case SKPaymentTransactionStateDeferred:
-                   // 交易延迟（需要家长批准等）
-//                   [self deferredTransaction:transaction];
-                   break;
-
-               default:
-                   break;
-           }
+        if (transaction.transactionState == SKPaymentTransactionStatePurchasing) {
+           //     [self completeTransaction:transaction];
+        } else if(transaction.transactionState == SKPaymentTransactionStatePurchased || transaction.transactionState == SKPaymentTransactionStateRestored){
+            [self completeTransaction:transaction];
+        } else if(transaction.transactionState == SKPaymentTransactionStateFailed){
+            [[SKPaymentQueue defaultQueue] finishTransaction:transaction];
+        } else {
+            NSLog(@"%ld", (long)transaction.transactionState);
+        }
        }
-    [[SKPaymentQueue defaultQueue] removeTransactionObserver:self];
 }
 
 - (void)completeTransaction:(SKPaymentTransaction *)transcation {
     @try {
+        NSString* productIdentifier = [[SDKIAPHelper sharedHelper] getProductIdentifierFromTransaction:transcation];
+        if (!productIdentifier) {
+            return;
+        }
         NSString* customPayload = transcation.payment.applicationUsername;
+        if (!customPayload) {
+            id idArray = [[SDKCache cache] objectForKey:productIdentifier];
+            if (idArray) {
+                NSMutableArray* array = (NSMutableArray*)idArray;
+                if (array.count > 0) {
+                    id idFirst = array.lastObject;
+                    if (idFirst) {
+                        customPayload = (NSString*)idFirst;
+                        [array removeLastObject];
+                        [[SDKCache cache] setObject:array forKey:productIdentifier];
+                    }
+                }
+            }
+        }
+        if (!customPayload) {
+            [[SKPaymentQueue defaultQueue] finishTransaction:transcation];
+            return;
+        }
         NSData* payloadData = [customPayload dataUsingEncoding:NSUTF8StringEncoding];
         NSDictionary* payloadDict = [NSJSONSerialization JSONObjectWithData:payloadData options:0 error:nil];
         int paymentId = [[payloadDict objectForKey:@"pay_id"] intValue];
         NSString* merchant_transaction_id = [payloadDict objectForKey:@"merchant_transaction_id"];
         NSString* payload = [payloadDict objectForKey:@"payload"];
-        NSString* productIdentifier = [[SDKIAPHelper sharedHelper] getProductIdentifierFromTransaction:transcation];
+//        NSString* productIdentifier = [[SDKIAPHelper sharedHelper] getProductIdentifierFromTransaction:transcation];
         NSString *transactionIdentifier = transcation.transactionIdentifier;
         NSString *payId = [@(paymentId) stringValue];
         if(!merchant_transaction_id || !productIdentifier || !transactionIdentifier){
@@ -3723,7 +3727,7 @@ static NSString * CRASH_EMAIL_ADDR;
             NSString* reason = [transcation.error localizedFailureReason];
             reason = reason ? reason : [transcation.error description];
             [self payFailure:paymentId productIdentifer:productIdentifier transactionIdentifier:transactionIdentifier merchant_transaction_id:merchant_transaction_id error:reason];
-        } else if(transcation.transactionState == SKPaymentTransactionStatePurchased || transcation.transactionState == SKPaymentTransactionStateRestored){
+        } else if(transcation.transactionState == SKPaymentTransactionStateRestored || transcation.transactionState == SKPaymentTransactionStatePurchased){
             //支付成功or重复支付
 //            NSString *productIdentifier = [[SDKIAPHelper sharedHelper] getProductIdentifierFromTransaction:transcation];
         
@@ -3931,6 +3935,13 @@ static NSString * CRASH_EMAIL_ADDR;
             }
         }
 //    }
+    
+    [self reSendFailedConsumedPayments];
+//                        [[SKPaymentQueue defaultQueue] addTransactionObserver:self];
+//                        SKPayment* payment = [[SKPayment alloc] init];
+  
+    NSArray<SKPaymentTransaction *>* trans = [[SKPaymentQueue defaultQueue] transactions];
+    [self doTransactions:trans];
 }
 
 //检查某个计费点是否漏单接口
@@ -4047,7 +4058,7 @@ static NSString * CRASH_EMAIL_ADDR;
     }
 }
 
--(void)reSendFailedConsumedPayments
+-(void)	reSendFailedConsumedPayments
 {
     if (sdkPayUtil) {
         [sdkPayUtil unShippingGoodsCheck:^(NSArray * _Nullable data) {
@@ -4327,6 +4338,20 @@ static NSString * CRASH_EMAIL_ADDR;
                         [payloadData setObject:payload forKey:@"payload"];
                     }
                     [payloadData setObject:payId forKey:@"pay_id"];
+                    NSData* payloadD = [NSJSONSerialization dataWithJSONObject:payloadData options:0 error:nil];
+                    NSString* payloadStr = [[NSString alloc] initWithData:payloadD encoding:NSUTF8StringEncoding];
+                    
+                    id idArray = [[SDKCache cache] objectForKey:_product.productIdentifier];
+                    NSMutableArray* array = nil;
+                    if (!idArray) {
+                        array = [[NSMutableArray alloc] init];
+                    } else {
+                        array = (NSMutableArray*)idArray;
+                    }
+                    [array addObject:payloadStr];
+                    
+                    [[SDKCache cache] setObject:array forKey:_product.productIdentifier];
+                    
                     [[SDKIAPHelper sharedHelper] buyProduct:_product payload:payloadData onCompletion:^(SKPaymentTransaction * _Nullable transcation) {
                         __strong SKProduct *product = _product;
                         NSString *transactionIdentifier = transcation.transactionIdentifier;
