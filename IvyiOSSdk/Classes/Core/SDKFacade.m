@@ -3691,8 +3691,8 @@ static NSString * CRASH_EMAIL_ADDR;
         if (!productIdentifier) {
             return;
         }
-        NSString* customPayload = transcation.payment.applicationUsername;
-        if (!customPayload) {
+        NSString* customPayload = nil;//transcation.payment.applicationUsername;
+//        if (!customPayload) {
             id idArray = [[SDKCache cache] objectForKey:productIdentifier];
             if (idArray) {
                 NSMutableArray* array = (NSMutableArray*)idArray;
@@ -3705,7 +3705,7 @@ static NSString * CRASH_EMAIL_ADDR;
                     }
                 }
             }
-        }
+//        }
         if (!customPayload) {
             [[SKPaymentQueue defaultQueue] finishTransaction:transcation];
             return;
