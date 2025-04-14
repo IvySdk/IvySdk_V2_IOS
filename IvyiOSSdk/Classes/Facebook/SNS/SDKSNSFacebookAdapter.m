@@ -141,6 +141,7 @@
     }
 //    if ([self isFBInstalled]) {
         [super login:nil];
+        [loginManager logOut];
 //        BOOL isLogin = [self getLoginState];
 //        if(!isLogin) {
             UIViewController *vc = [[UIApplication sharedApplication] keyWindow].rootViewController;
