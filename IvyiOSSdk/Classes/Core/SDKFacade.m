@@ -3063,10 +3063,30 @@ static NSString * CRASH_EMAIL_ADDR;
     [data setObject:idToken forKey:@"token"];
     [params setObject:data forKey:@"data"];
     [[SDKNetworkHelper sharedHelper] POST:url parameters:params jsonRequest:TRUE jsonResponse:TRUE success:^(id  _Nullable responseObject) {
-        if (self->_snsDelegate && [self->_snsDelegate respondsToSelector:@selector(signInAppleFailure:)]) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self->_snsDelegate signInAppleSuccess:userId];
-            });
+        @try {
+            if (responseObject && [responseObject isKindOfClass:[NSDictionary class]]) {
+                NSDictionary* dict = (NSDictionary*)responseObject;
+                int code = [[dict objectForKey:@"code"] intValue];
+                if (code == 0) {
+                    if (self->_snsDelegate && [self->_snsDelegate respondsToSelector:@selector(signInAppleFailure:)]) {
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            [self->_snsDelegate signInAppleSuccess:userId];
+                        });
+                    }
+                } else {
+                    if (self->_snsDelegate && [self->_snsDelegate respondsToSelector:@selector(signInAppleFailure:)]) {
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            [self->_snsDelegate signInAppleFailure:@"verify failed"];
+                        });
+                    }
+                }
+            }
+        } @catch (NSException *exception) {
+            if (self->_snsDelegate && [self->_snsDelegate respondsToSelector:@selector(signInAppleFailure:)]) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self->_snsDelegate signInAppleFailure:@"verify failed"];
+                });
+            }
         }
     } failure:^(NSError * _Nullable error) {
         if (self->_snsDelegate && [self->_snsDelegate respondsToSelector:@selector(signInAppleFailure:)]) {
