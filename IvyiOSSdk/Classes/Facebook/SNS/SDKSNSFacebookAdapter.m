@@ -136,6 +136,9 @@
 
 -(void)login:(sns_login_result)handler;
 {
+    if (!loginManager) {
+        loginManager = [[FBSDKLoginManager alloc] init];
+    }
 //    if ([self isFBInstalled]) {
         [super login:nil];
 //        BOOL isLogin = [self getLoginState];
