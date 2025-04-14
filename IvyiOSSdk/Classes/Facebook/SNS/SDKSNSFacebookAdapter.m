@@ -70,44 +70,50 @@
 
 -(BOOL)isLogin
 {
-    if (![self isFBInstalled]) {
-        [self snsLoginFailure:@"had not installed facebook app"];
-        return NO;
-    }
-    BOOL isLogin = [self getLoginState];
     if (!loginManager) {
         loginManager = [[FBSDKLoginManager alloc] init];
     }
-    if (isLogin) {
-        FBSDKProfile *profile = [FBSDKProfile currentProfile];
-        self->user_id = profile.userID;
-        if (self->user_id) {
-            [[SDKCache cache] setObject:self->user_id forKey:@"fb_user_id"];
-            [self fetchMe:YES callback:^(BOOL result) {
-                if (result) {
-                    [self verifyLoginStatus];
-                }
-            }];
-            
-        } else {
-            [self snsLoginFailure:@""];
-        }
-        
-//        if(!_meDetails) {
+    
+    return NO;
+    
+//    if (![self isFBInstalled]) {
+//        [self snsLoginFailure:@"had not installed facebook app"];
+//        return NO;
+//    }
+//    BOOL isLogin = [self getLoginState];
+//    if (!loginManager) {
+//        loginManager = [[FBSDKLoginManager alloc] init];
+//    }
+//    if (isLogin) {
+//        FBSDKProfile *profile = [FBSDKProfile currentProfile];
+//        self->user_id = profile.userID;
+//        if (self->user_id) {
+//            [[SDKCache cache] setObject:self->user_id forKey:@"fb_user_id"];
 //            [self fetchMe:YES callback:^(BOOL result) {
 //                if (result) {
 //                    [self verifyLoginStatus];
 //                }
 //            }];
-//            [self fetchFriends:NO];
+//            
 //        } else {
-//            [self verifyLoginStatus];
+//            [self snsLoginFailure:@""];
 //        }
-    } else {
-        [self snsLoginFailure:@""];
-    }
-//    return _meDetails && isLogin;
-    return false;
+//        
+////        if(!_meDetails) {
+////            [self fetchMe:YES callback:^(BOOL result) {
+////                if (result) {
+////                    [self verifyLoginStatus];
+////                }
+////            }];
+////            [self fetchFriends:NO];
+////        } else {
+////            [self verifyLoginStatus];
+////        }
+//    } else {
+//        [self snsLoginFailure:@""];
+//    }
+////    return _meDetails && isLogin;
+//    return false;
 }
 
 -(BOOL)getLoginState
@@ -130,10 +136,10 @@
 
 -(void)login:(sns_login_result)handler;
 {
-    if ([self isFBInstalled]) {
+//    if ([self isFBInstalled]) {
         [super login:nil];
-        BOOL isLogin = [self getLoginState];
-        if(!isLogin) {
+//        BOOL isLogin = [self getLoginState];
+//        if(!isLogin) {
             UIViewController *vc = [[UIApplication sharedApplication] keyWindow].rootViewController;
             NSArray *permissions = nil;
             if (_permissions) {
@@ -248,7 +254,7 @@
 //                    }
 //                }
 //            }];
-        } else {
+//        } else {
 //            FBSDKProfile *profile = [FBSDKProfile currentProfile];
 //            self->user_id = profile.userID;
 //            if (self->_meDetails) {
@@ -268,29 +274,29 @@
 //                handler(nil);
 //            }
             
-            FBSDKProfile *profile = [FBSDKProfile currentProfile];
-            self->user_id = profile.userID;
-            if (self->user_id) {
-                [[SDKCache cache] setObject:self->user_id forKey:@"fb_user_id"];
-                [self fetchMe:YES callback:^(BOOL result) {
-                    if (result) {
-                        [self verifyLoginStatus];
-                    }
-                }];
-                if (handler) {
-                    handler(nil);
-                }
-            } else{
-                [self snsLoginFailure:@""];
-                if (handler) {
-                    handler(nil);
-                }
-            }
-            
-        }
-    } else {
-        [self snsLoginFailure:@"No facebook app installed!"];
-    }
+//            FBSDKProfile *profile = [FBSDKProfile currentProfile];
+//            self->user_id = profile.userID;
+//            if (self->user_id) {
+//                [[SDKCache cache] setObject:self->user_id forKey:@"fb_user_id"];
+//                [self fetchMe:YES callback:^(BOOL result) {
+//                    if (result) {
+//                        [self verifyLoginStatus];
+//                    }
+//                }];
+//                if (handler) {
+//                    handler(nil);
+//                }
+//            } else{
+//                [self snsLoginFailure:@""];
+//                if (handler) {
+//                    handler(nil);
+//                }
+//            }
+//            
+//        }
+//    } else {
+//        [self snsLoginFailure:@"No facebook app installed!"];
+//    }
 }
 
 -(void)logout
