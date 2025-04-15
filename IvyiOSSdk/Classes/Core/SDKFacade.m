@@ -3080,6 +3080,12 @@ static NSString * CRASH_EMAIL_ADDR;
                         });
                     }
                 }
+            } else {
+                if (self->_snsDelegate && [self->_snsDelegate respondsToSelector:@selector(signInAppleFailure:)]) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [self->_snsDelegate signInAppleFailure:@"verify failed"];
+                    });
+                }
             }
         } @catch (NSException *exception) {
             if (self->_snsDelegate && [self->_snsDelegate respondsToSelector:@selector(signInAppleFailure:)]) {
