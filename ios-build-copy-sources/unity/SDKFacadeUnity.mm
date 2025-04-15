@@ -9,7 +9,7 @@
 #import <IvyiOSSdk/SDKDefine.h>
 #import <IvyiOSSdk/SDKFacade.h>
 #import <IvyiOSSdk/SDKJSONHelper.h>
-#import <IvyiOSSdk/EasyTextView.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -274,13 +274,11 @@ extern "C" {
 
 -(void)snsLoginSuccess
 {
-    [EasyTextView showText:@"send sns login success"];
     Send("IvySdkListener", "snsLoginSuccess", "");
 }
 
 -(void)snsLoginFailure:(NSString *)error
 {
-    [EasyTextView showText:@"send sns login faild"];
     const char * _msg = error ? [error UTF8String] : "";
     Send("IvySdkListener", "snsLoginFailure", _msg);
 }

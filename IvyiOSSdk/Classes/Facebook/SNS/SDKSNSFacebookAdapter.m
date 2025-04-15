@@ -11,7 +11,6 @@
 #import "SDKJSONHelper.h"
 #import <IvyiOSSdk/SDKNetworkHelper.h>
 #import <IvyiOSSdk/SDKFacade.h>
-#import <IvyiOSSdk/EasyTextView.h>
 
 @implementation SDKSNSFacebookAdapter
 {
@@ -467,29 +466,23 @@
     [data setObject:token forKey:@"token"];
     [data setObject:authToken forKey:@"auth_token"];
     [params setObject:data forKey:@"data"];
-    [EasyTextView showText:@"start validate"];
     [[SDKNetworkHelper sharedHelper] POST:url parameters:params jsonRequest:TRUE jsonResponse:TRUE success:^(id  _Nullable responseObject) {
         @try {
             if (responseObject && [responseObject isKindOfClass:[NSDictionary class]]) {
                 NSDictionary* response = (NSDictionary*)responseObject;
                 int code = [[response objectForKey:@"code"] intValue];
-                [EasyTextView showText:[NSString stringWithFormat:@"valid result code;%d", code]];
                 if (code == 0) {
                     [self snsLoginSuccess];
                 } else {
-                    [EasyTextView showText:@"start failed"];
                     [self snsLoginFailure:@"verify failed"];
                 }
             } else {
-                [EasyTextView showText:@"start failed"];
                 [self snsLoginFailure:@"verify failed"];
             }
         } @catch (NSException *exception) {
-            [EasyTextView showText:@"start failed"];
             [self snsLoginFailure:@"verify failed"];
         }
     } failure:^(NSError * _Nullable error) {
-        [EasyTextView showText:@"start failed"];
         [self snsLoginFailure:@"verify failed"];
     }];
 }

@@ -9,7 +9,6 @@
 #import "SDKSNSAdapter.h"
 #import "SDKJSONHelper.h"
 #import "SDKHelper.h"
-#import <IvyiOSSdk/EasyTextView.h>
 
 @implementation SDKSNSAdapter
 {
@@ -184,7 +183,6 @@
     DLog(@"[snslog] %@ login success, me = %@", NSStringFromClass(self.class), [self me]);
     [SDKHelper sendNotif:SDK_SNS_LOGIN_SUCCESS];
     if(_snsDelegate && [_snsDelegate respondsToSelector:@selector(snsLoginSuccess)]) {
-        [EasyTextView showText:@"success response called "];
         [_snsDelegate snsLoginSuccess];
     }
 }
@@ -193,7 +191,6 @@
 {
     DLog(@"[snslog] %@ login failure, error = %@", NSStringFromClass(self.class), error ? error : @"");
     if(_snsDelegate && [_snsDelegate respondsToSelector:@selector(snsLoginFailure:)]) {
-        [EasyTextView showText:@"failure response called "];
         [_snsDelegate snsLoginFailure:error];
     }
 }
