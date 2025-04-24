@@ -2590,7 +2590,7 @@ static NSString * CRASH_EMAIL_ADDR;
         if (_hasInitAfter) {
             [self _syncConfig];
             if (_paymentData) {
-                [self recheckFailedPayments];
+//                [self recheckFailedPayments];
             }
            // [self reSendFailedConsumedPayments];
         }
