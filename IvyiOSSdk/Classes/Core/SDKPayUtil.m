@@ -78,32 +78,32 @@
         }];
 }
 
-- (void)verifyOrder:(NSString *)merchant_transaction_id receipt:(NSString *)receipt transactionIdentifier:(NSString *)transactionIdentifier productIdentifier:(NSString *)productIdentifier callback:(void (^)(BOOL))callback
+- (void)verifyOrder:(NSString *)merchant_transaction_id receipt:(NSString *)receipt transactionIdentifier:(NSString *)transactionIdentifier productIdentifier:(NSString *)productIdentifier callback:(void (^)(BOOL,BOOL))callback
 {
     if (merchant_transaction_id == nil || receipt == nil || transactionIdentifier == nil || productIdentifier == nil) {
         if (callback) {
-            callback(FALSE);
+            callback(FALSE, FALSE);
         }
         return;
     }
     NSString* appid =[[SDKFacade sharedInstance] getConfig:SDK_CONFIG_KEY_APP_ID];
     if (appid == nil) {
         if (callback) {
-            callback(FALSE);
+            callback(FALSE, FALSE);
         }
         return;
     }
     NSString* country = [[SDKFacade sharedInstance] getConfig:SDK_CONFIG_KEY_COUNTRY];
     if (country == nil) {
         if (callback) {
-            callback(FALSE);
+            callback(FALSE, FALSE);
         }
         return;
     }
     NSString* uuid = [[SDKFacade sharedInstance] getConfig:SDK_CONFIG_KEY_UUID] ;
     if (uuid == nil) {
         if (callback) {
-            callback(FALSE);
+            callback(FALSE, FALSE);
         }
         return;
     }
@@ -128,32 +128,32 @@
                     NSNumber* verifyResult = [data objectForKey:@"data"];
                     NSLog(@"PayUtil -- verify result:%d", [verifyResult boolValue]);
                     if (callback) {
-                        callback([verifyResult boolValue]);
+                        callback([verifyResult boolValue], FALSE);
                     }
                 } else {
                     if (callback) {
-                        callback(FALSE);
+                        callback(FALSE, FALSE);
                     }
                 }
             } else{
                 NSString* reason = @"empty response";
                 NSLog(@"PayUtil -- verify failed:%@", reason);
                 if (callback) {
-                    callback(FALSE);
+                    callback(FALSE, FALSE);
                 }
             }
         } else {
             NSString* reason = @"invalid response";
             NSLog(@"PayUtil -- verify failed:%@", reason);
             if (callback) {
-                callback(FALSE);
+                callback(FALSE, FALSE);
             }
         }
         } failure:^(NSError * _Nullable error) {
             NSString* reason = error ? @"" : error.localizedDescription;
             NSLog(@"PayUtil -- verify failed:%@", reason);
             if (callback) {
-                callback(FALSE);
+                callback(FALSE, TRUE);
             }
         }];
 }

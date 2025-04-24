@@ -126,8 +126,8 @@
             filePath = "../IvyiOSSdk/Classes/Core/SDKFacade.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "4270"
-            endingLineNumber = "4270"
+            startingLineNumber = "4275"
+            endingLineNumber = "4275"
             landmarkName = "-pay:payload:"
             landmarkType = "7">
          </BreakpointContent>
@@ -162,22 +162,6 @@
             endingLineNumber = "30"
             landmarkName = "-showAIHelp:message:tag:welcome:"
             landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "DD49D65A-15FB-4D63-8331-970B5C52A275"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "../IvyiOSSdk/Classes/AIHelp/SDKAIHelp.m"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "131"
-            endingLineNumber = "131"
-            landmarkName = "AIHelp_unreadMessageArrived(eventData)"
-            landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

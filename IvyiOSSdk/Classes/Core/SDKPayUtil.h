@@ -18,7 +18,7 @@
 
 -(void)preOrder:(nonnull NSMutableDictionary *)product callback:(void(^_Nullable)(NSString * _Nullable merchant_transaction_id))callback;
 
--(void)verifyOrder:(nonnull NSString*)merchant_transaction_id receipt:(nonnull NSString*)receipt transactionIdentifier:(nonnull NSString *)transactionIdentifier productIdentifier:(nonnull NSString*)productIdentifier callback:(void(^_Nullable)(BOOL status))callback;
+-(void)verifyOrder:(nonnull NSString*)merchant_transaction_id receipt:(nonnull NSString*)receipt transactionIdentifier:(nonnull NSString *)transactionIdentifier productIdentifier:(nonnull NSString*)productIdentifier callback:(void(^_Nullable)(BOOL status, BOOL netError))callback;
 
 -(void)shippngGoods:(nonnull NSString*)merchant_transaction_id callback:(void(^_Nullable)(BOOL status))callback;
 

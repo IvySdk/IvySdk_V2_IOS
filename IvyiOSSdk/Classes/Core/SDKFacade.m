@@ -2590,7 +2590,7 @@ static NSString * CRASH_EMAIL_ADDR;
         if (_hasInitAfter) {
             [self _syncConfig];
             if (_paymentData) {
-              //  [self recheckFailedPayments];
+                [self recheckFailedPayments];
             }
            // [self reSendFailedConsumedPayments];
         }
@@ -3068,7 +3068,7 @@ static NSString * CRASH_EMAIL_ADDR;
                 NSDictionary* dict = (NSDictionary*)responseObject;
                 int code = [[dict objectForKey:@"code"] intValue];
                 if (code == 0) {
-                    if (self->_snsDelegate && [self->_snsDelegate respondsToSelector:@selector(signInAppleFailure:)]) {
+                    if (self->_snsDelegate && [self->_snsDelegate respondsToSelector:@selector(signInAppleSuccess:)]) {
                         dispatch_async(dispatch_get_main_queue(), ^{
                             [self->_snsDelegate signInAppleSuccess:userId];
                         });
@@ -3752,7 +3752,7 @@ static NSString * CRASH_EMAIL_ADDR;
             [[SKPaymentQueue defaultQueue] finishTransaction:transcation];
             NSString* reason = [transcation.error localizedFailureReason];
             reason = reason ? reason : [transcation.error description];
-            [self payFailure:paymentId productIdentifer:productIdentifier transactionIdentifier:transactionIdentifier merchant_transaction_id:merchant_transaction_id error:reason];
+            [self payFailure:paymentId productIdentifer:productIdentifier transactionIdentifier:transactionIdentifier merchant_transaction_id:merchant_transaction_id error:reason netError:FALSE];
         } else if(transcation.transactionState == SKPaymentTransactionStateRestored || transcation.transactionState == SKPaymentTransactionStatePurchased){
             //支付成功or重复支付
 //            NSString *productIdentifier = [[SDKIAPHelper sharedHelper] getProductIdentifierFromTransaction:transcation];
@@ -3776,20 +3776,23 @@ static NSString * CRASH_EMAIL_ADDR;
             
             [self storeFailedCheckPayment:paymentId data:data payload:payload productIdentifier:productIdentifier transactionIdentifier:transactionIdentifier merchantTransactionId:merchant_transaction_id];
             [[SKPaymentQueue defaultQueue] finishTransaction:transcation];
-            [self->sdkPayUtil verifyOrder:merchant_transaction_id receipt:receiptBase64 transactionIdentifier:transactionIdentifier productIdentifier:productIdentifier callback:^(BOOL status) {
+            
+           
+            
+            [self->sdkPayUtil verifyOrder:merchant_transaction_id receipt:receiptBase64 transactionIdentifier:transactionIdentifier productIdentifier:productIdentifier callback:^(BOOL status, BOOL nError) {
                 if (status) {
                     NSMutableDictionary* response = [[NSMutableDictionary alloc] init];
                     [response setObject:@(0) forKey:@"status"];
                     [self verifyPaymentResponse:response paymentId:paymentId payload:payload productIdentifier:productIdentifier transactionIdentifier:transactionIdentifier merchantTransactionId:merchant_transaction_id];
                 } else {
-                    [self payFailure:paymentId productIdentifer:productIdentifier transactionIdentifier:transactionIdentifier merchant_transaction_id:merchant_transaction_id error:@"verify failed"];
+                    [self payFailure:paymentId productIdentifer:productIdentifier transactionIdentifier:transactionIdentifier merchant_transaction_id:merchant_transaction_id error:@"verify failed" netError:nError];
                 }
             }];
             
         } else if(transcation.transactionState == SKPaymentTransactionStateFailed) {
             //支付失败
             [[SKPaymentQueue defaultQueue] finishTransaction:transcation];
-            [self payFailure:paymentId productIdentifer:productIdentifier transactionIdentifier:transactionIdentifier merchant_transaction_id:merchant_transaction_id error:@"payment trans failed!"];
+            [self payFailure:paymentId productIdentifer:productIdentifier transactionIdentifier:transactionIdentifier merchant_transaction_id:merchant_transaction_id error:@"payment trans failed!" netError:FALSE];
         }
     } @catch (NSException *exception) {
         
@@ -3819,7 +3822,7 @@ static NSString * CRASH_EMAIL_ADDR;
 #endif
             [self paySuccess:paymentId payload:payload productIdentifier:productIdentifier transactionIdentifier:transactionIdentifier orderInfo:nil merchantTransactionId:merchantTransactionId];
         } @catch (NSException *exception) {
-            [self payFailure:paymentId productIdentifer:productIdentifier transactionIdentifier:transactionIdentifier merchant_transaction_id:merchantTransactionId error:[exception description]];
+            [self payFailure:paymentId productIdentifer:productIdentifier transactionIdentifier:transactionIdentifier merchant_transaction_id:merchantTransactionId error:[exception description] netError:true];
         } @finally {
             [SDKHelper hideLoading];
             BOOL isPurchased = [[SDKIAPHelper sharedHelper] isPurchasedProductsIdentifier:productIdentifier];
@@ -3856,7 +3859,7 @@ static NSString * CRASH_EMAIL_ADDR;
                 break;
         }
         err = [NSString stringWithFormat:@"[%d] %@", status, err];
-        [self payFailure:paymentId productIdentifer:productIdentifier transactionIdentifier:transactionIdentifier merchant_transaction_id:merchantTransactionId error:err];
+        [self payFailure:paymentId productIdentifer:productIdentifier transactionIdentifier:transactionIdentifier merchant_transaction_id:merchantTransactionId error:err netError:FALSE];
     }
 }
 
@@ -3902,12 +3905,14 @@ static NSString * CRASH_EMAIL_ADDR;
     }
 }
 
--(void)payFailure:(int)paymentId productIdentifer:(NSString *)productIdentifier transactionIdentifier:(NSString *)transactionIdentifier merchant_transaction_id:(nullable NSString*)merchant_transaction_id error:(NSString *)err
+-(void)payFailure:(int)paymentId productIdentifer:(NSString *)productIdentifier transactionIdentifier:(NSString *)transactionIdentifier merchant_transaction_id:(nullable NSString*)merchant_transaction_id error:(NSString *)err netError:(BOOL)netError
 {
     DLog(@"[pay] [failure] [err: %@]", err);
     [SDKHelper hideLoading];
     [self logEvent:@"iap_failure" withData:@{@"productIdentifier":productIdentifier}];
-    [self removeCheckFailedTransaction:transactionIdentifier];
+    if (!netError) {
+        [self removeCheckFailedTransaction:transactionIdentifier];
+    }
     if(_paymentDelegate && [_paymentDelegate respondsToSelector:@selector(onPaymentFailure:forError:merchantTransactionId:)]) {
         [_paymentDelegate onPaymentFailure:paymentId forError:err merchantTransactionId:merchant_transaction_id];
     }
@@ -3944,13 +3949,13 @@ static NSString * CRASH_EMAIL_ADDR;
                 NSString *receipt = [obj objectForKey:@"receipt"];
                 if (sdkPayUtil && merchantTransactionId != nil) {
 //                    [self checkPurchasedOnline:payId.intValue data:data payload:payload productIdentifier:productIdentifier transactionIdentifier:transactionIdentifier];
-                    [sdkPayUtil verifyOrder:merchantTransactionId receipt:receipt transactionIdentifier:transactionIdentifier productIdentifier:productIdentifier callback:^(BOOL status) {
+                    [sdkPayUtil verifyOrder:merchantTransactionId receipt:receipt transactionIdentifier:transactionIdentifier productIdentifier:productIdentifier callback:^(BOOL status, BOOL nError) {
                         if (status) {
                             NSMutableDictionary* response = [[NSMutableDictionary alloc] init];
                             [response setObject:@(0) forKey:@"status"];
                             [self verifyPaymentResponse:response paymentId:payId.intValue payload:payload productIdentifier:productIdentifier transactionIdentifier:transactionIdentifier merchantTransactionId:merchantTransactionId];
                         } else {
-                            [self payFailure:payId.intValue productIdentifer:productIdentifier transactionIdentifier:transactionIdentifier merchant_transaction_id:merchantTransactionId error:@"verify failed"];
+                            [self payFailure:payId.intValue productIdentifer:productIdentifier transactionIdentifier:transactionIdentifier merchant_transaction_id:merchantTransactionId error:@"verify failed" netError:nError];
                         }
                     }];
                 } else {
@@ -3988,13 +3993,13 @@ static NSString * CRASH_EMAIL_ADDR;
                     NSString *receipt = [obj objectForKey:@"receipt"];
                     if (sdkPayUtil && merchantTransactionId != nil) {
     //                    [self checkPurchasedOnline:payId.intValue data:data payload:payload productIdentifier:productIdentifier transactionIdentifier:transactionIdentifier];
-                        [sdkPayUtil verifyOrder:merchantTransactionId receipt:receipt transactionIdentifier:transactionIdentifier productIdentifier:productIdentifier callback:^(BOOL status) {
+                        [sdkPayUtil verifyOrder:merchantTransactionId receipt:receipt transactionIdentifier:transactionIdentifier productIdentifier:productIdentifier callback:^(BOOL status, BOOL nError) {
                             if (status) {
                                 NSMutableDictionary* response = [[NSMutableDictionary alloc] init];
                                 [response setObject:@(0) forKey:@"status"];
                                 [self verifyPaymentResponse:response paymentId:payId.intValue payload:payload productIdentifier:productIdentifier transactionIdentifier:transactionIdentifier merchantTransactionId:merchantTransactionId];
                             } else {
-                                [self payFailure:payId.intValue productIdentifer:productIdentifier transactionIdentifier:transactionIdentifier merchant_transaction_id:merchantTransactionId error:@"verify failed"];
+                                [self payFailure:payId.intValue productIdentifer:productIdentifier transactionIdentifier:transactionIdentifier merchant_transaction_id:merchantTransactionId error:@"verify failed" netError:nError];
                             }
                         }];
                     } else {
@@ -4268,7 +4273,7 @@ static NSString * CRASH_EMAIL_ADDR;
 {
     __block NSString *payId = [@(paymentId) stringValue];
     if(_invalidProductIds && [_invalidProductIds containsObject:payId]) {
-        [self payFailure:paymentId productIdentifer:@"" transactionIdentifier:nil merchant_transaction_id:nil error:@"该计费点不合法或已失效！"];
+        [self payFailure:paymentId productIdentifer:@"" transactionIdentifier:nil merchant_transaction_id:nil error:@"该计费点不合法或已失效！" netError:FALSE];
         return;
     }
     
@@ -4296,7 +4301,7 @@ static NSString * CRASH_EMAIL_ADDR;
     if(_product) {
         @try {
             if (![self isNetworkConnected]) {
-                [self payFailure:paymentId productIdentifer:_product.productIdentifier transactionIdentifier:nil merchant_transaction_id:nil error:@"计费失败，请检查网络！"];
+                [self payFailure:paymentId productIdentifer:_product.productIdentifier transactionIdentifier:nil merchant_transaction_id:nil error:@"计费失败，请检查网络！" netError:FALSE];
                 return;
             }
 #if VerifyIdCard
@@ -4355,7 +4360,7 @@ static NSString * CRASH_EMAIL_ADDR;
                 
                 [sdkPayUtil preOrder:goodsData callback:^(NSString *merchant_transaction_id) {
                     if (merchant_transaction_id == nil) {
-                        [self payFailure:paymentId productIdentifer:_product.productIdentifier transactionIdentifier:nil merchant_transaction_id:nil error:@"预下单失败"];
+                        [self payFailure:paymentId productIdentifer:_product.productIdentifier transactionIdentifier:nil merchant_transaction_id:nil error:@"预下单失败" netError:FALSE];
                         return;
                     }
                     NSMutableDictionary* payloadData = [[NSMutableDictionary alloc] init];
@@ -4386,7 +4391,7 @@ static NSString * CRASH_EMAIL_ADDR;
                             [[SKPaymentQueue defaultQueue] finishTransaction:transcation];
                             NSString* reason = [transcation.error localizedFailureReason];
                             reason = reason ? reason : [transcation.error description];
-                            [self payFailure:paymentId productIdentifer:product.productIdentifier transactionIdentifier:transactionIdentifier merchant_transaction_id:merchant_transaction_id error:reason];
+                            [self payFailure:paymentId productIdentifer:product.productIdentifier transactionIdentifier:transactionIdentifier merchant_transaction_id:merchant_transaction_id error:reason netError:FALSE];
                         } else if(transcation.transactionState == SKPaymentTransactionStatePurchased || transcation.transactionState == SKPaymentTransactionStateRestored){
                             //支付成功or重复支付
                             NSString *productIdentifier = [[SDKIAPHelper sharedHelper] getProductIdentifierFromTransaction:transcation];
@@ -4411,20 +4416,20 @@ static NSString * CRASH_EMAIL_ADDR;
                             
                             [self storeFailedCheckPayment:paymentId data:data payload:payload productIdentifier:productIdentifier transactionIdentifier:transactionIdentifier merchantTransactionId:merchant_transaction_id];
                             [[SKPaymentQueue defaultQueue] finishTransaction:transcation];
-                            [self->sdkPayUtil verifyOrder:merchant_transaction_id receipt:receiptBase64 transactionIdentifier:transactionIdentifier productIdentifier:productIdentifier callback:^(BOOL status) {
+                            [self->sdkPayUtil verifyOrder:merchant_transaction_id receipt:receiptBase64 transactionIdentifier:transactionIdentifier productIdentifier:productIdentifier callback:^(BOOL status, BOOL nError) {
                                 if (status) {
                                     NSMutableDictionary* response = [[NSMutableDictionary alloc] init];
                                     [response setObject:@(0) forKey:@"status"];
                                     [self verifyPaymentResponse:response paymentId:paymentId payload:payload productIdentifier:productIdentifier transactionIdentifier:transactionIdentifier merchantTransactionId:merchant_transaction_id];
                                 } else {
-                                    [self payFailure:paymentId productIdentifer:product.productIdentifier transactionIdentifier:transactionIdentifier merchant_transaction_id:merchant_transaction_id error:@"verify failed"];
+                                    [self payFailure:paymentId productIdentifer:product.productIdentifier transactionIdentifier:transactionIdentifier merchant_transaction_id:merchant_transaction_id error:@"verify failed" netError:nError];
                                 }
                             }];
                             
                         } else if(transcation.transactionState == SKPaymentTransactionStateFailed) {
                             //支付失败
                             [[SKPaymentQueue defaultQueue] finishTransaction:transcation];
-                            [self payFailure:paymentId productIdentifer:product.productIdentifier transactionIdentifier:transactionIdentifier merchant_transaction_id:merchant_transaction_id error:@"payment trans failed!"];
+                            [self payFailure:paymentId productIdentifer:product.productIdentifier transactionIdentifier:transactionIdentifier merchant_transaction_id:merchant_transaction_id error:@"payment trans failed!" netError:FALSE];
                         }
                     }];
                 }];
@@ -4437,7 +4442,7 @@ static NSString * CRASH_EMAIL_ADDR;
                         [[SKPaymentQueue defaultQueue] finishTransaction:transcation];
                         NSString* reason = [transcation.error localizedFailureReason];
                         reason = reason ? reason : [transcation.error description];
-                        [self payFailure:paymentId productIdentifer:product.productIdentifier transactionIdentifier:transactionIdentifier merchant_transaction_id:nil error:reason];
+                        [self payFailure:paymentId productIdentifer:product.productIdentifier transactionIdentifier:transactionIdentifier merchant_transaction_id:nil error:reason netError:FALSE];
                     } else if(transcation.transactionState == SKPaymentTransactionStatePurchased || transcation.transactionState == SKPaymentTransactionStateRestored){
                         //支付成功or重复支付
                         NSString *productIdentifier = [[SDKIAPHelper sharedHelper] getProductIdentifierFromTransaction:transcation];
@@ -4450,20 +4455,20 @@ static NSString * CRASH_EMAIL_ADDR;
                     } else if(transcation.transactionState == SKPaymentTransactionStateFailed) {
                         //支付失败
                         [[SKPaymentQueue defaultQueue] finishTransaction:transcation];
-                        [self payFailure:paymentId productIdentifer:product.productIdentifier transactionIdentifier:transactionIdentifier merchant_transaction_id:nil error:@"payment trans failed!"];
+                        [self payFailure:paymentId productIdentifer:product.productIdentifier transactionIdentifier:transactionIdentifier merchant_transaction_id:nil error:@"payment trans failed!" netError:FALSE];
                     }
                 }];
             }
         } @catch (NSException *exception) {
             DLog(@"[sdk]Exception: %@", [exception description]);
-            [self payFailure:paymentId productIdentifer:_product.productIdentifier transactionIdentifier:nil merchant_transaction_id:nil error:[exception description]];
+            [self payFailure:paymentId productIdentifer:_product.productIdentifier transactionIdentifier:nil merchant_transaction_id:nil error:[exception description] netError:FALSE];
         } @catch (NSError *error) {
             DLog(@"[sdk]Error: %@", [error localizedDescription]);
-            [self payFailure:paymentId productIdentifer:_product.productIdentifier transactionIdentifier:nil merchant_transaction_id:nil error:[error localizedDescription]];
+            [self payFailure:paymentId productIdentifer:_product.productIdentifier transactionIdentifier:nil merchant_transaction_id:nil error:[error localizedDescription] netError:FALSE];
         } @finally {
         }
     } else {
-        [self payFailure:paymentId productIdentifer:_product.productIdentifier transactionIdentifier:nil merchant_transaction_id:nil error:@"没有配置该计费点！"];
+        [self payFailure:paymentId productIdentifer:_product.productIdentifier transactionIdentifier:nil merchant_transaction_id:nil error:@"没有配置该计费点！" netError:FALSE];
     }
 }
 
@@ -4724,7 +4729,6 @@ static NSString * CRASH_EMAIL_ADDR;
 
 -(NSString *)getPaymentDatas
 {
-    
     return [SDKJSONHelper toJSONString:_paymentData];
 }
 
@@ -5223,21 +5227,21 @@ static NSString * CRASH_EMAIL_ADDR;
         [self performAppleIdSignIn];
         return;
     }
-#ifdef FIREBASE_PLUS
-    FIRUser* currentUser = [[FIRAuth auth] currentUser];
-    NSString* appleId = [self getSignedAppleUID];
-    //firebase store的user不为空，并且本地存储了appid
-    //游戏没有卸载重装
-    if ((currentUser != nil) && ![appleId isEqualToString:@""]) {
-        if (_snsDelegate && [_snsDelegate respondsToSelector:@selector(signInAppleSuccess:)]) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self->_snsDelegate signInAppleSuccess:appleId];
-            });
-        }
-    } else {
-        [self performAppleIdSignIn];
-    }
-#endif
+//#ifdef FIREBASE_PLUS
+//    FIRUser* currentUser = [[FIRAuth auth] currentUser];
+//    NSString* appleId = [self getSignedAppleUID];
+//    //firebase store的user不为空，并且本地存储了appid
+//    //游戏没有卸载重装
+//    if ((currentUser != nil) && ![appleId isEqualToString:@""]) {
+//        if (_snsDelegate && [_snsDelegate respondsToSelector:@selector(signInAppleSuccess:)]) {
+//            dispatch_async(dispatch_get_main_queue(), ^{
+//                [self->_snsDelegate signInAppleSuccess:appleId];
+//            });
+//        }
+//    } else {
+//        [self performAppleIdSignIn];
+//    }
+//#endif
 }
 
 -(void) authFirestoreCallBack:(FIRUser* _Nullable) authUser{
