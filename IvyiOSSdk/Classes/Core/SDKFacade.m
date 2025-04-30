@@ -3069,9 +3069,9 @@ static NSString * CRASH_EMAIL_ADDR;
                 NSArray* array = [dict allKeys];
                 BOOL hasCode = [array containsObject:@"code"];
                 if (!hasCode) {
-                    if (self->_snsDelegate && [self->_snsDelegate respondsToSelector:@selector(signInAppleSuccess:)]) {
+                    if (self->_snsDelegate && [self->_snsDelegate respondsToSelector:@selector(signInAppleFailure:)]) {
                         dispatch_async(dispatch_get_main_queue(), ^{
-                            [self->_snsDelegate signInAppleSuccess:userId];
+                            [self->_snsDelegate signInAppleFailure:@"verify failed"];
                         });
                     }
                     return;
