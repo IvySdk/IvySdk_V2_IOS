@@ -470,6 +470,12 @@
         @try {
             if (responseObject && [responseObject isKindOfClass:[NSDictionary class]]) {
                 NSDictionary* response = (NSDictionary*)responseObject;
+                NSArray* array = [response allKeys];
+                BOOL hasCode = [array containsObject:@"code"];
+                if (!hasCode) {
+                    [self snsLoginFailure:@"verify failed"];
+                    return;
+                }
                 int code = [[response objectForKey:@"code"] intValue];
                 if (code == 0) {
                     [self snsLoginSuccess];

@@ -112,7 +112,7 @@ This is the IvySdk for ios platform.
       appsflyer.xcconfig = { "GCC_PREPROCESSOR_DEFINITIONS" => 'APPSFLYER=1' }
   end
   
-  FirebaseVersion = '10.29.0' #'10.19.0' #'10.12.0' #'8.15.0' #'6.30.0'#'6.23.0' #'6.18.0' #'6.14.0'
+  FirebaseVersion = '11.12.0' #'10.19.0' #'10.12.0' #'8.15.0' #'6.30.0'#'6.23.0' #'6.18.0' #'6.14.0'
   s.subspec 'Firebase' do |firebase|
       firebase.source_files = 'IvyiOSSdk/Classes/Firebase/**/*'
       firebase.public_header_files = 'IvyiOSSdk/Classes/Firebase/**/*.h'

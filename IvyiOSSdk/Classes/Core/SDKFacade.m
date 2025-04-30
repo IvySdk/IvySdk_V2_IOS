@@ -3066,6 +3066,16 @@ static NSString * CRASH_EMAIL_ADDR;
         @try {
             if (responseObject && [responseObject isKindOfClass:[NSDictionary class]]) {
                 NSDictionary* dict = (NSDictionary*)responseObject;
+                NSArray* array = [dict allKeys];
+                BOOL hasCode = [array containsObject:@"code"];
+                if (!hasCode) {
+                    if (self->_snsDelegate && [self->_snsDelegate respondsToSelector:@selector(signInAppleSuccess:)]) {
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            [self->_snsDelegate signInAppleSuccess:userId];
+                        });
+                    }
+                    return;
+                }
                 int code = [[dict objectForKey:@"code"] intValue];
                 if (code == 0) {
                     if (self->_snsDelegate && [self->_snsDelegate respondsToSelector:@selector(signInAppleSuccess:)]) {
@@ -3073,6 +3083,7 @@ static NSString * CRASH_EMAIL_ADDR;
                             [self->_snsDelegate signInAppleSuccess:userId];
                         });
                     }
+                    
                 } else {
                     if (self->_snsDelegate && [self->_snsDelegate respondsToSelector:@selector(signInAppleFailure:)]) {
                         dispatch_async(dispatch_get_main_queue(), ^{
@@ -3776,8 +3787,6 @@ static NSString * CRASH_EMAIL_ADDR;
             
             [self storeFailedCheckPayment:paymentId data:data payload:payload productIdentifier:productIdentifier transactionIdentifier:transactionIdentifier merchantTransactionId:merchant_transaction_id];
             [[SKPaymentQueue defaultQueue] finishTransaction:transcation];
-            
-           
             
             [self->sdkPayUtil verifyOrder:merchant_transaction_id receipt:receiptBase64 transactionIdentifier:transactionIdentifier productIdentifier:productIdentifier callback:^(BOOL status, BOOL nError) {
                 if (status) {
