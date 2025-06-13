@@ -92,9 +92,9 @@
 #ifdef APPSFLYER
 #import <IvyiOSSdk/SDKAppsflyerInit.h>
 #endif
-//#if APPLOVIN
-#import <AppLovinSDK/AppLovinSDK.h>
-//#endif
+////#if APPLOVIN
+//#import <AppLovinSDK/AppLovinSDK.h>
+////#endif
 #if APPLOVIN_MAX
 #import <OpenWrapSDK/OpenWrapSDK.h>
 #import <DTBiOSSDK/DTBiOSSDK.h>
@@ -1355,6 +1355,7 @@ static NSString * CRASH_EMAIL_ADDR;
             return;
         }
         _hasInitedAdConfig = true;
+//#if GOOGLE
 #ifdef GoogleTest
         [[[SDKGoogleTestInit alloc] init] doInit:nil];
 #endif
@@ -1376,8 +1377,9 @@ static NSString * CRASH_EMAIL_ADDR;
             FIRConsentTypeAdUserData : FIRConsentStatusGranted,
             FIRConsentTypeAdPersonalization : FIRConsentStatusGranted,
         }];
+
         [[SDKFacade sharedInstance] _checkAndTrackIDFT];
-        
+#if GOOGLE
         [GADMobileAds.sharedInstance startWithCompletionHandler:^(GADInitializationStatus * _Nonnull status) {
             DLog(@"[adlog] GADMobileAds start");
 #if DEBUG
@@ -1391,7 +1393,9 @@ static NSString * CRASH_EMAIL_ADDR;
 #endif
             [self initAdModules];
         }];
+#endif
     }
+//#endif
 }
 
 -(void)createAdModule:(SDK_ADTYPE)adType withTag:(nonnull NSString *)tag moduleData:(NSDictionary *)data
@@ -2569,9 +2573,13 @@ static NSString * CRASH_EMAIL_ADDR;
     //    } @catch (NSException *exception) {
     //
     //    }
-        self->_hasInitedAd = true;
+#if GOOGLE
+    self->_hasInitedAd = true;
     BOOL useLocalGuide = [[self getConf:@"local_gdpr_guide"] boolValue];
     [SDKGDPRUtil setupGDPR:useLocalGuide vc:self.rootVC];
+#else
+    [self callInitAd];
+#endif
 }
 
 -(void)startInitAd
@@ -7403,7 +7411,11 @@ static NSString * CRASH_EMAIL_ADDR;
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         int status = [SDKFacade checkIDFAAuthorizationStatus];
         if (status == 1) {
+#if GOOGLE
             [SDKGDPRUtil checkAdmobGDPR:self.rootVC];
+#endif
+        } else if (status == 2){
+            [SDKFacade requestIDFA];
         }
     });
 }

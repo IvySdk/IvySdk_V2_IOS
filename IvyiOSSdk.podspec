@@ -73,6 +73,7 @@ This is the IvySdk for ios platform.
           'IvyiOSSdk-Core' => ['IvyiOSSdk/Assets/Core/*.png', 'IvyiOSSdk/Assets/Core/*.xib', 'IvyiOSSdk/Assets/Core/LocalizedStrings/*.lproj/*']
       }
       core.frameworks = 'CoreTelephony', 'GameController', 'MediaPlayer', 'GameKit', 'MessageUI', 'iAd', 'Security','Foundation', 'SystemConfiguration', 'CoreGraphics', 'Security'
+      core.dependency 'GoogleUserMessagingPlatform', '2.6.0'
 #      core.prefix_header_contents = '#import <IvyiOSSdk/NSString+Base64.h>'
       core.xcconfig = { "OTHER_LDFLAGS" => '-ObjC' }
 #      core.xcconfig = { "GCC_PREPROCESSOR_DEFINITIONS" => 'MODULES=1' }

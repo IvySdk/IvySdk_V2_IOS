@@ -15,7 +15,7 @@ target mytarget do
   pod 'IvyiOSSdk/Firebase+', :path => '../'
   pod 'IvyiOSSdk/FacebookSNS', :path => '../'
  # pod 'IvyiOSSdk/Applovin', :path => '../'
-  pod 'IvyiOSSdk/Google', :path => '../'
+#  pod 'IvyiOSSdk/Google', :path => '../'
   #pod 'IvyiOSSdk/Max', :path => '../'
  # pod 'IvyiOSSdk/Pangle', :path => '../'
  pod 'IvyiOSSdk/Yandex', :path => '../'
